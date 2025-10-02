@@ -121,5 +121,4 @@ def main():
             game_scrabble()
             option=0
 
-
-game_scrabble() 
+main()
