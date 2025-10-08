@@ -1,5 +1,5 @@
 def fileT2():
-    valid=False
+    valid="False"
 
     f=open("f:\\test2.txt","r")
 
@@ -13,9 +13,9 @@ def fileT2():
     
     for line in f:
         if line==user_pass:
-            valid=True
+            valid="True"
             
-    if valid==True:
+    if valid=="True":
         print("woohoo access!")
     else:
         print("no access!")
