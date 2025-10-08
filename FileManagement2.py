@@ -18,7 +18,6 @@ def encrypt(userpass):
         letter_ascii=ord(letter)
         letter_ascii*=17
         encrypt_userpass.append(letter_ascii)
-    print(encrypt_userpass)
     return encrypt_userpass
 
 # def decrypt(encrypt_userpass):
@@ -36,7 +35,11 @@ def fileT2():
     password=input("give a password: ")
     user_pass=(username+password)
     user_pass=encrypt(user_pass)
+
+ 
     for line in f:
+        line=line.strip()
+        print(line)
         
         if user_pass=="[1785, 1853, 1649, 1649, 1700, 1853, 1785, 1870]":
             valid="admin"
