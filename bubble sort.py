@@ -14,9 +14,10 @@ for i in unsorted:
         print(count)
         count+=1
 
-for i in unsorted+1:
-    sorted=unsorted[-i]
+for i in range (1,string_length+1):
+    sorted.append(unsorted[-i])
 
 
 
+print(unsorted)
 print(sorted)
