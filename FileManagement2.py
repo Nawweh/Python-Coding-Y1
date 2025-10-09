@@ -1,6 +1,6 @@
 
 def admin_prompt():
-    f=open("f:\\test2.txt","a")
+    f=open("f:\\test2.txt","w")
     append="true"
     user_add=input("add a new username: ")
     pass_add=input("add a new password: ")
@@ -60,7 +60,7 @@ def fileT2():
         print("no access!")
 
 
-fileT2()
+admin_prompt()
 
 
 
