@@ -1,9 +1,14 @@
-unsorted=[7,4,1,98,5,12,65,68,13,90,2,123,65,234]
+unsorted=[7,4,1,98,5]
 sorted=[]
+count=0
 hold=0
-for i in unsorted:
-    for x in unsorted:
-        if i<x:
-            hold=i
-    sorted.append(hold)
-print(sorted)
+for i in (0,30):
+    count=0
+    for x in range (0,4):
+        if unsorted[x+1]>unsorted[x]:
+            hold=unsorted[count+1]
+            unsorted[count+1]=unsorted[count]
+            unsorted[count]=hold
+            print(count)
+        count+=1
+print(unsorted)
