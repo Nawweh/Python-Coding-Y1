@@ -21,4 +21,5 @@ for i in range (1,string_length+1):
     sorted.append(unsorted[-i])
 
 
+print (unsorted)
 print(sorted)
