@@ -93,11 +93,11 @@ def record_job_reason():
                 flag = True
             else:
                 local_choice = int(reason_choice) - 1
-                if local_choice < 1 or local_choice > 5: 
+                if local_choice < 0 or local_choice >= 5: 
                     print("Sorry, you did not choose an option within the given range")
                     flag = True
                 else:
-                    job_reason = reason_list[local_choice]
+                    job_reason = [local_choice]
                     flag = False
         
         return job_reason      
