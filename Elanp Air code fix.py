@@ -151,6 +151,8 @@ def record_job_outcomes(diff):
                 
     
     return job_outcome
+
+record_job_outcomes(6222)
         
 def get_job_time():
     flag = True
@@ -167,17 +169,16 @@ def get_job_time():
         except:
             print("Sorry, you did not enter a time in a valid format")
             flag = True
-        float(time)
-        if time % 0.25 == 0:
-            print('Time value accepted!')
-            flag = False
         else:
-            print("Sorry, you did not enter a time in a valid format")
-            flag = True
+            if float(time) % 0.25 == 0:
+                print('Time value accepted!')
+                flag = False
+            else:
+                print("Sorry, you did not enter a time in a valid format")
+                flag = True
                 
     return time
 
-get_job_time()
 
 
 def output_summary(name, sn, jr, jd, pjd, ts, jo, ns):
