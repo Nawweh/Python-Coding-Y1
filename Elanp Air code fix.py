@@ -28,7 +28,10 @@ def get_previous_date():
             print("Sorry, you did not enter a valid date")
             flag = True
         else:
+
             return datetime.strptime(user_date, "%d/%m/%Y").date()
+
+
 
 def next_service_date():
     now = datetime.now()
@@ -36,9 +39,9 @@ def next_service_date():
     job_month = now.strftime("%m")
     job_year = now.strftime("%Y")
 
-    temp_year = int(job_month) + 1 
+    temp_year = int(job_year) + 1 
 
-    next_date = str(job_day) + "/" + str(job_month) + "/" + int(temp_year) 
+    next_date = str(job_day) + "/" + str(job_month) + "/" + str(temp_year) 
 
     return next_date
 
@@ -48,8 +51,10 @@ def cal_difference(prev, curr):
     current_job = curr
 
     diff = current_job - prev_job
-
+    print(diff)
     return diff.days
+
+    
 
 def check_serial_num(): 
     flag = True
@@ -60,9 +65,9 @@ def check_serial_num():
 
         if len(ser_num) == 12: 
             print('Serial number accepted!')
-            flag = True
+            flag = False
         else:    
-            flag=False
+            flag=True
                 
     return ser_num
 
@@ -92,20 +97,23 @@ def record_job_reason():
                 print("Sorry, you did not enter a valid option number")
                 flag = True
             else:
+                reason_choice=int(reason_choice)
                 local_choice = int(reason_choice) - 1
-                if local_choice < 0 or local_choice >= 5: 
+
+
+                if reason_choice < 1 or reason_choice > 5: 
+
                     print("Sorry, you did not choose an option within the given range")
                     flag = True
                 else:
-                    job_reason = [local_choice]
+                    job_reason = reason_list[local_choice]
                     flag = False
         
         return job_reason      
     
-record_job_reason()
 def record_job_outcomes(diff):
     
-    if int(diff) < 40: 
+    if int(diff) < 31: 
         job_outcome = "grounded - do not fly"
         print("")
         print("#############")
@@ -146,6 +154,7 @@ def record_job_outcomes(diff):
                 
     
     return job_outcome
+
         
 def get_job_time():
     flag = True
@@ -162,11 +171,16 @@ def get_job_time():
         except:
             print("Sorry, you did not enter a time in a valid format")
             flag = True
-        else:    
-            print('Time value accepted!')
-            flag = False
+        else:
+            if float(time) % 0.25 == 0:
+                print('Time value accepted!')
+                flag = False
+            else:
+                print("Sorry, you did not enter a time in a valid format")
+                flag = True
                 
     return time
+
 
 
 def output_summary(name, sn, jr, jd, pjd, ts, jo, ns):
