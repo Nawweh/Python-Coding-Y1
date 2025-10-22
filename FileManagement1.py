@@ -4,8 +4,3 @@ def fileT1():
         print(line)
     f.close()
 
-def fileT2():
-    f=open("f:\\U+P.txt","W")
-    f.close()
-
-fileT2()

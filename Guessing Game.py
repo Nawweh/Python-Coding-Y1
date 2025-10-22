@@ -40,7 +40,8 @@ option=int(input("1 player guessing game or 2 player guessing game? (type 1 or 2
 while option!=1 or option!=2:
     if option==1:
             game.Guess1p()
+            break
     elif option==2:
             game.Guess2p()
-    
-    option=int(input("You have input a correct character, so 2 player guessing game or 1 player guessing game? (type 1 or 2) "))
+            break
+    option=int(input("You have input an incorrect character, so 2 player guessing game or 1 player guessing game? (type 1 or 2) "))

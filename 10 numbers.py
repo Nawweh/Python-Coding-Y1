@@ -15,6 +15,5 @@ def get_count(list_num):
 def get_sum(list_num):
     count=0
     for num in list_num:
-        print(num)
-
-get_sum(list_num)
+        count+=num
+    print(num)
