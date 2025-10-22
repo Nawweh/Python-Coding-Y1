@@ -39,9 +39,9 @@ def next_service_date():
     job_month = now.strftime("%m")
     job_year = now.strftime("%Y")
 
-    temp_year = int(job_month) + 1 
+    temp_year = int(job_year) + 1 
 
-    next_date = str(job_day) + "/" + str(job_month) + "/" + int(temp_year) 
+    next_date = str(job_day) + "/" + str(job_month) + "/" + str(temp_year) 
 
     return next_date
 
@@ -99,7 +99,10 @@ def record_job_reason():
             else:
                 reason_choice=int(reason_choice)
                 local_choice = int(reason_choice) - 1
+
+
                 if reason_choice < 1 or reason_choice > 5: 
+
                     print("Sorry, you did not choose an option within the given range")
                     flag = True
                 else:
@@ -110,7 +113,7 @@ def record_job_reason():
     
 def record_job_outcomes(diff):
     
-    if int(diff) < 40: 
+    if int(diff) < 31: 
         job_outcome = "grounded - do not fly"
         print("")
         print("#############")
@@ -152,7 +155,6 @@ def record_job_outcomes(diff):
     
     return job_outcome
 
-record_job_outcomes(6222)
         
 def get_job_time():
     flag = True
