@@ -3,11 +3,12 @@ num=100
 found=False
 while found==False:
     len_list=(len(list))
-    
-    if list[int(len_list//2)]<num:
-         for i in range (int(len_list//2)):
-              list.append(list[-i])
-              print(list)
+    if list[int(len_list//2)]>num:
+          list2=[] 
+          print("hi")      
+          for i in range (int(len_list//2)):
+              list2.append(list[i])
+              print(list2)
               
-         break
+          break
         
