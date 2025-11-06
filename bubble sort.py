@@ -1,7 +1,7 @@
 import random
 unsorted=[]
-for i in range (random.randint(0,50)):
-    unsorted.append(random.randint(0,100))
+for i in range (random.randint(0,20000)):
+    unsorted.append(random.randint(0,10000))
 
 sorted=[]
 count=0
@@ -21,5 +21,5 @@ for i in range (1,string_length+1):
     sorted.append(unsorted[-i])
 
 
-print (unsorted)
+
 print(sorted)
