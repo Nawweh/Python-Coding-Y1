@@ -1,6 +1,6 @@
 import random
 unsorted=[]
-for i in range (random.randint(0,20000)):
+for i in range (random.randint(0,1000)):
     unsorted.append(random.randint(0,10000))
 
 sorted=[]
