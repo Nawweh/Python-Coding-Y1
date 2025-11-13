@@ -19,5 +19,6 @@ df = pd.DataFrame({
 # df=df.sort_values(ascending=False,by="B")
 # print(max(df.value_counts(subset="A")))
 
-max_person=df.loc[df.groupby("Team")["BidPrice"].idxmax()]
-print(max_person)
+print(df.groupby("Team")[["BidPrice"]].max())
+
+df.groupby("Team")[["BidPrice"]].max()
