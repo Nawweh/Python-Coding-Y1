@@ -1,7 +1,7 @@
 # importing pandas as pd 
 
 import pandas as pd 
-import matplotlib as plt
+
 
 # Creating the dataframe 
 
@@ -19,6 +19,10 @@ df = pd.DataFrame({
 # df=df.sort_values(ascending=False,by="B")
 # print(max(df.value_counts(subset="A")))
 
-print(df.groupby("Team")[["BidPrice"]].max())
+# print(df.groupby("Team")[["BidPrice"]].max())
 
-df.groupby("Team")[["BidPrice"]].max()
+
+
+print(df.groupby("Team")[["Runs"]].agg(["mean","min"]))
+
+df[["Runs","BidPrice"]].max
