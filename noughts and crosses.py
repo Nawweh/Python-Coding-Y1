@@ -1,3 +1,5 @@
+import random
+
 def valid(column,row):
 
 
@@ -12,13 +14,18 @@ def valid(column,row):
                 
             else:
                 return "True"
+            
+        else: 
+            print("This is invalid, please try again")
+            return "False"
+    
     else: 
         print("This is invalid, please try again")
         return "False"
     
 
     
-def win_test():
+def win():
     if board[0][0] =="X" and board[0][1] =="X" and board[0][2] =="X": #checks if the rows have win condition
         return "game end"
     elif board[0][0] =="O" and board[0][1] =="O" and board[0][2] =="O":
@@ -59,7 +66,7 @@ def win_test():
     return "going" #if a win is not found, return going
     
 
-def win(): #old system that works but is unoptimised, here for testing :)
+def win_test(): #old system that works but is here for testing :)
     if board[0][0] =="X" and board[0][1] =="X" and board[0][2] =="X": #checks if the rows have win condition
         print ("X wins")
         return "game end"
@@ -117,12 +124,85 @@ def win(): #old system that works but is unoptimised, here for testing :)
     
 
 
+def board_reset():
+    for i in range (0,3):
+            for j in range (0,3):
+                board[i][j]="-"
 
-def game_start():
+
+
+def game_ai_basic(): #same as the normal game except there is an ai instead of a player
 
     game="going"
     count=0
-    valid_check="False"
+
+
+    while game=="going": 
+        count+=1
+
+        if count%2==0: #checks if its the players or ai's turn
+            
+            valid_check="False"
+        
+            while valid_check=="False": #after the inputs are ran (in this case the basic ai's random move), it will use the "valid" function to check if its a valid move, if not it will set valid_check to False and repeat again
+                column=random.randint(0,2)
+                row=random.randint(0,2)
+                
+                valid_check=valid(column,row)
+            
+            board[row][column]="O"
+
+        else: #if its not the ai's turn, it will let the player have their turn
+            for i in range (0,3):
+                print("\n")
+                for j in range (0,3):
+                    print(board[i][j], end="\t") #cycles through each item in the board and prints it out to display the board
+
+            valid_check="False"
+            
+            
+            while valid_check=="False": #after the inputs are ran, it will use the "valid" function to check if its a valid move, if not it will set valid_check to False and repeat again
+                count2=0
+
+                try:
+                    column=int(input("\nwhat column would you like to move in (1,2,3): "))-1
+                    row=int(input("what row would you like to move in (1,2,3): " ))-1
+                    
+                except:
+                    print("This is invalid, please try again") #checks if input is an integer, if not it will return "False"
+                    count2=1
+                    valid_check="False"
+
+                if count2==0:
+                    valid_check=valid(column,row)
+
+            board[row][column]="X"
+
+        if count==9: #checks if its a draw
+                print("It's a draw!")
+                return
+
+        
+        game=win()
+        if game=="game end": #if the game is won it will check who was last playing when they won and then declare them as the winner, and then run menu again
+            for i in range (0,3):
+                print("\n")
+                for j in range (0,3):
+                    print(board[i][j], end="\t")
+            print("\n")
+            if count%2==0:
+                print("O wins")
+                return
+            else:
+                print("X wins")
+                return
+
+    
+
+def game_2P():
+
+    game="going"
+    count=0
 
 
     while game=="going": 
@@ -134,15 +214,13 @@ def game_start():
         valid_check="False"
         
         
-
         while valid_check=="False": #after the inputs are ran, it will use the "valid" function to check if its a valid move, if not it will set valid_check to False and repeat again
             count2=0
-            column=input("\nwhat column would you like to move in (0,1,2): ") 
-            row=input("what row would you like to move in (0,1,2): " )
 
             try:
-                column=int(column)
-                row=int(row)
+                column=int(input("\nwhat column would you like to move in (1,2,3): "))-1
+                row=int(input("what row would you like to move in (1,2,3): " ))-1
+                
             except:
                 print("This is invalid, please try again") #checks if input is an integer, if not it will return "False"
                 count2=1
@@ -159,9 +237,10 @@ def game_start():
 
         if count==9: #checks if its a draw
                 print("It's a draw!")
-                menu()
+                return
+
         
-        game=win_test()
+        game=win()
         if game=="game end": #if the game is won it will check who was last playing when they won and then declare them as the winner, and then run menu again
             for i in range (0,3):
                 print("\n")
@@ -170,34 +249,61 @@ def game_start():
             print("\n")
             if count%2==0:
                 print("O wins")
-                menu()
+                return
             else:
                 print("X wins")
-                menu()
+                return
 
 
-
-
+#//#//#//#//#//#//#//#//#//#//#//#//#//#//#//#//#//#//#//#//#//#//#//#//#//#//#//#//#//#//#
 board=[["-","-","-"],["-","-","-"],["-","-","-"]] #defines the board as a global variable
-
-
+#//#//#//#//#//#//#//#//#//#//#//#//#//#//#//#//#//#//#//#//#//#//#//#//#//#//#//#//#//#//# 
 
 
 def menu(): #options menu for if the user would like to play or not
     end=False
+    play=False
     while end==False:
-        option=input("would you like to play? (Y/N): ")
-        match option:
-            case "Y":
-                board=[["-","-","-"],["-","-","-"],["-","-","-"]]
-                game_start()
-            case "N":
-                print("Okay, ending the menu")
-                end=True
-            case _:
-                print("invalid input, try again")
-    
 
+        try:
+            option=input("would you like to play? (Y/N): ")
+            match option:
+
+                case "Y": #if the user wants to play they select what gamemode they want
+                    play=True
+                    while play==True:
+
+                        try:
+                            option2=input("type 2P for 2 player\ntype 'BASIC AI' for the basic ai\n")
+                            match option2:
+
+                                case "2P":
+                                    play=False
+                                    board_reset()
+                                    game_2P()
+
+                                case "BASIC AI":
+                                    play=False
+                                    board_reset()
+                                    game_ai_basic()
+
+                                case _:
+                                    print("invalid input, try again")
+                        except:
+                            print("invalid input, try again")
+
+
+                case "N":
+                    print("Okay, ending the menu")
+                    end=True
+                    pass
+
+                case _:
+                    print("invalid input, try again")
+
+        except:
+            print("invalid input, try again")
+            pass
 
 
 menu()
