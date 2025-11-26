@@ -42,34 +42,69 @@ def advanced_ai_move():
         for j in range (0,3):
             if board[i][j]=="X":
                 count+=1
-                if count==2:
-
-                    for x in range (0,3):
-                        print("hi")
-                        print(x)
-                        if board[i][x]=="-":
-                            print("tesing")
-                            board[i][row]="O"
-                            print_board()
-                            return
-
-
-    # for i in range (0,3): #if the player has more than 2 in a column, it will block
-    #     count=0
-    #     for j in range (0,3):
-    #         if board[j][i]=="X":
-    #             count+=1
-    #             if count==2:
-        
-    #                 while valid_check=="False": 
-    #                     column=random.randint(0,3)
                 
-    #                     valid_check=valid(column,i)
-            
-    #                 board[column][i]="O"
-    #                 return
+            else:
+                pos=j
+        if count==2:
 
-    print("hi")
+                for x in range (0,3):
+                    
+                    if board[i][x]=="-":
+
+                        board[i][pos]="O"
+                        return
+    
+    for i in range (0,3): #if the player has more than 2 in a column, it will block
+        count=0
+        for j in range (0,3):
+            if board[j][i]=="X":
+                count+=1
+                
+            else:
+                pos=j
+        if count==2:
+
+                for x in range (0,3):
+                    
+                    if board[x][i]=="-":
+
+                        board[pos][i]="O"
+                        return
+                    
+    for i in range (0,3): #if the player has more than 2 in a diagonal, it will block
+            
+        if board[i][i]=="X":
+            count+=1
+                
+        else:
+            pos=j
+        
+        if count==2:
+
+                for x in range (0,3):
+                    
+                    if board[x][x]=="-":
+
+                        board[pos][i]="O"
+                        return
+                    
+    for i in range (0,3): #if the player has more than 2 in an inverse diagonal, it will block
+            
+        if board[i][-i+1]=="X":
+            count+=1
+                
+        else:
+            pos=j
+        
+        if count==2:
+
+                for x in range (0,3):
+                    
+                    if board[x][-x]=="-":
+
+                        board[pos][i]="O"
+                        return
+                    
     while valid_check=="False": #if it cannot block/attack, it will place in a random spot
         column=random.randint(0,2)
         row=random.randint(0,2)
@@ -201,6 +236,7 @@ def advanced_ai_game():
         if count%2==0: #checks if its the players or ai's turn
                        
                 advanced_ai_move()
+                print("test2")
 
         else: #if its not the ai's turn, it will let the player have their turn
             print_board()
@@ -335,7 +371,7 @@ def menu(): #options menu for if the user would like to play or not
                                 case _:
                                     print("invalid input, try again")
                         except:
-                            print("invalid input, try again")
+                            print("invalid input, try again1")
 
 
                 case "N":
