@@ -24,7 +24,57 @@ def valid(column,row):
         return "False"
     
 
+
+def print_board():
+    for i in range (0,3):
+                print("\n")
+                for j in range (0,3):
+                    print(board[i][j], end="\t") #cycles through each item in the board and prints it out to display the board
+
     
+
+def advanced_ai_move():
+
+    valid_check="False"
+
+    for i in range (0,3): #if the player has more than 2 in a row, it will block
+        count=0
+        for j in range (0,3):
+            if board[i][j]=="X":
+                count+=1
+                if count==2:
+
+                    for x in range (0,3):
+                        print("hi")
+                        if board[i][x]=="-":
+                            board[i][row]="O"
+
+
+    # for i in range (0,3): #if the player has more than 2 in a column, it will block
+    #     count=0
+    #     for j in range (0,3):
+    #         if board[j][i]=="X":
+    #             count+=1
+    #             if count==2:
+        
+    #                 while valid_check=="False": 
+    #                     column=random.randint(0,3)
+                
+    #                     valid_check=valid(column,i)
+            
+    #                 board[column][i]="O"
+    #                 return
+
+    print("hi")
+    while valid_check=="False": #if it cannot block/attack, it will place in a random spot
+        column=random.randint(0,2)
+        row=random.randint(0,2)
+                    
+        valid_check=valid(column,row)
+    board[row][i]="O"
+
+                    
+
 def win():
     if board[0][0] =="X" and board[0][1] =="X" and board[0][2] =="X": #checks if the rows have win condition
         return "game end"
@@ -66,63 +116,6 @@ def win():
     return "going" #if a win is not found, return going
     
 
-def win_test(): #old system that works but is here for testing :)
-    if board[0][0] =="X" and board[0][1] =="X" and board[0][2] =="X": #checks if the rows have win condition
-        print ("X wins")
-        return "game end"
-    elif board[0][0] =="O" and board[0][1] =="O" and board[0][2] =="O":
-        print ("O wins")
-        return "game end"
-    if board[1][0] =="X" and board[1][1] =="X" and board[1][2] =="X":
-        print ("X wins")
-        return "game end"
-    elif board[1][0] =="O" and board[1][1] =="O" and board[1][2] =="O":
-        print ("O wins")
-        return "game end"
-    if board[2][0] =="X" and board[2][1] =="X" and board[2][2] =="X":
-        print ("X wins")
-        return "game end"
-    elif board[2][0] =="O" and board[2][1] =="O" and board[2][2] =="O":
-        print ("O wins")
-        return "game end"
-    
-
-    if board[0][0] =="X" and board[1][0] =="X" and board[2][0] =="X": #checks if all the columns have win condition
-        print ("X wins")
-        return "game end"
-    elif board[0][0] =="O" and board[1][0] =="O" and board[2][0] =="O":
-        print ("O wins")
-        return "game end"
-    if board[0][1] =="X" and board[1][1] =="X" and board[2][1] =="X":
-        print ("X wins")
-        return "game end"
-    elif board[0][1] =="O" and board[1][1] =="O" and board[2][1] =="O":
-        print ("O wins")
-        return "game end"
-    if board[0][2] =="X" and board[1][2] =="X" and board[2][2] =="X":
-        print ("X wins")
-        return "game end"
-    elif board[0][2] =="O" and board[1][2] =="O" and board[2][2] =="O":
-        print ("O wins")
-        return "game end"
-    
-    
-    if board[0][0] =="X" and board[1][1] =="X" and board[2][2] =="X": #checks both diagonals to see if win condition
-        print ("X wins")
-        return "game end"
-    elif board[0][0] =="O" and board[1][1] =="O" and board[2][2] =="O":
-        print ("O wins")
-        return "game end"
-    if board[2][0] =="X" and board[1][1] =="X" and board[0][2] =="X":
-        print ("X wins")
-        return "game end"
-    elif board[2][0] =="O" and board[1][1] =="O" and board[0][2] =="O":
-        print ("O wins")
-        return "game end"
-    
-    return "going" #if a win is not found, return going
-    
-
 
 def board_reset():
     for i in range (0,3):
@@ -153,10 +146,7 @@ def game_ai_basic(): #same as the normal game except there is an ai instead of a
             board[row][column]="O"
 
         else: #if its not the ai's turn, it will let the player have their turn
-            for i in range (0,3):
-                print("\n")
-                for j in range (0,3):
-                    print(board[i][j], end="\t") #cycles through each item in the board and prints it out to display the board
+            print_board()
 
             valid_check="False"
             
@@ -185,17 +175,68 @@ def game_ai_basic(): #same as the normal game except there is an ai instead of a
         
         game=win()
         if game=="game end": #if the game is won it will check who was last playing when they won and then declare them as the winner, and then run menu again
-            for i in range (0,3):
-                print("\n")
-                for j in range (0,3):
-                    print(board[i][j], end="\t")
-            print("\n")
+            print_board()
+
             if count%2==0:
                 print("O wins")
                 return
             else:
                 print("X wins")
                 return
+            
+
+
+def advanced_ai_game():
+    game="going"
+    count=0
+
+
+    while game=="going": 
+        count+=1
+
+        if count%2==0: #checks if its the players or ai's turn
+                       
+                advanced_ai_move()
+
+        else: #if its not the ai's turn, it will let the player have their turn
+            print_board()
+
+            valid_check="False"
+            
+            
+            while valid_check=="False": #after the inputs are ran, it will use the "valid" function to check if its a valid move, if not it will set valid_check to False and repeat again
+                count2=0
+
+                try:
+                    column=int(input("\nwhat column would you like to move in (1,2,3): "))-1
+                    row=int(input("what row would you like to move in (1,2,3): " ))-1
+                    
+                except:
+                    print("This is invalid, please try again") #checks if input is an integer, if not it will return "False"
+                    count2=1
+                    valid_check="False"
+
+                if count2==0:
+                    valid_check=valid(column,row)
+
+            board[row][column]="X"
+
+        if count==9: #checks if its a draw
+                print("It's a draw!")
+                return
+
+        
+        game=win()
+        if game=="game end": #if the game is won it will check who was last playing when they won and then declare them as the winner, and then run menu again
+            print_board()
+
+            if count%2==0:
+                print("O wins")
+                return
+            else:
+                print("X wins")
+                return
+
 
     
 
@@ -207,10 +248,8 @@ def game_2P():
 
     while game=="going": 
         count+=1
-        for i in range (0,3):
-            print("\n")
-            for j in range (0,3):
-                print(board[i][j], end="\t") #cycles through each item in the board and prints it out to display the board
+        print_board()
+
         valid_check="False"
         
         
@@ -242,10 +281,7 @@ def game_2P():
         
         game=win()
         if game=="game end": #if the game is won it will check who was last playing when they won and then declare them as the winner, and then run menu again
-            for i in range (0,3):
-                print("\n")
-                for j in range (0,3):
-                    print(board[i][j], end="\t")
+            print_board()
             print("\n")
             if count%2==0:
                 print("O wins")
@@ -286,6 +322,11 @@ def menu(): #options menu for if the user would like to play or not
                                     play=False
                                     board_reset()
                                     game_ai_basic()
+                                
+                                case "ADVANCED AI":
+                                    play=False
+                                    board_reset()
+                                    advanced_ai_game()
 
                                 case _:
                                     print("invalid input, try again")
