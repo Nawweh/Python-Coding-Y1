@@ -46,8 +46,12 @@ def advanced_ai_move():
 
                     for x in range (0,3):
                         print("hi")
+                        print(x)
                         if board[i][x]=="-":
+                            print("tesing")
                             board[i][row]="O"
+                            print_board()
+                            return
 
 
     # for i in range (0,3): #if the player has more than 2 in a column, it will block
