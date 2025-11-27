@@ -3,9 +3,9 @@ import random
 def valid(column,row):
 
 
-    if column <= 3 or column < 0: #checks if column/row is within 0, 1 and 2, and if there is already an X or O in the spot, if not it will return "False"
+    if column <= 2 and column >= 0: #checks if column/row is within 0, 1 and 2, and if there is already an X or O in the spot, if not it will return "False"
         
-        if row <= 3 or row < 0:
+        if row <= 2 and row >= 0:
             
             if board[row][column]=="X" or board[row][column]=="O":
                 
@@ -426,7 +426,7 @@ def menu(): #options menu for if the user would like to play or not
                                 case _:
                                     print("invalid input, try again")
                         except:
-                            print("invalid input, try again1")
+                            print("invalid input, try again")
 
 
                 case "N":
