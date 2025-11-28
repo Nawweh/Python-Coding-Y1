@@ -318,6 +318,7 @@ def advanced_ai_game():
             board[row][column]="X"
 
         if count==9: #checks if its a draw
+                print_board()
                 print("It's a draw!")
                 return
 
@@ -370,6 +371,7 @@ def game_2P():
             board[row][column]="X"
 
         if count==9: #checks if its a draw
+                print_board()
                 print("It's a draw!")
                 return
 
@@ -405,23 +407,33 @@ def menu(): #options menu for if the user would like to play or not
                     while play==True:
 
                         try:
-                            option2=input("type 2P for 2 player\ntype 'BASIC AI' for the basic ai\ntype 'ADVANCED AI' for the advanced ai\n: ")
+                            option2=input("type '1' for 2 player\ntype '2' for the Basic AI\ntype '3' for the Advanced AI\n: ")
                             match option2:
 
-                                case "2P":
+                                case "1":
                                     play=False
+                                    print("Running 2P game")
                                     board_reset()
                                     game_2P()
 
-                                case "BASIC AI":
+                                case "2":
                                     play=False
+                                    print("Running Basic AI")
                                     board_reset()
                                     game_ai_basic()
                                 
-                                case "ADVANCED AI":
+                                case "3":
                                     play=False
+                                    print("Running Advanced AI")
                                     board_reset()
                                     advanced_ai_game()
+                                
+                                case "bob":
+                                    count3=1
+                                    while True:
+                                        count3+=1
+                                        print("bob",count3)
+
 
                                 case _:
                                     print("invalid input, try again")
@@ -435,10 +447,10 @@ def menu(): #options menu for if the user would like to play or not
                     pass
 
                 case _:
-                    print("invalid input, try again")
+                    print("invalid input, try again1")
 
         except:
-            print("invalid input, try again")
+            print("invalid input, try again2")
             pass
 
 menu()
