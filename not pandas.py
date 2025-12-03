@@ -23,6 +23,6 @@ df = pd.DataFrame({
 
 
 
-print(df.groupby("Team")[["Runs"]].agg(["mean","min"]))
+print(df.groupby("Team")[["Runs"]].agg[[min]])
 
 df[["Runs","BidPrice"]].max
