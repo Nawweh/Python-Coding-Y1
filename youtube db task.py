@@ -78,9 +78,7 @@ def yt_unempreate_to_ytsuccess():
 
     df1=df.groupby("Unemployment rate")[["highest_monthly_earnings"]].max()
     df1=df1.reset_index()
-    df1=df1.sort_values("highest_monthly_earnings")
-    df1=df1.tail(50)
-    df1.plot(kind="bar",x="Unemployment rate",y="highest_monthly_earnings")
+    df1.plot(kind="scatter",x="Unemployment rate",y="highest_monthly_earnings")
     plt.xticks(rotation=90)
     plt.show()
     
