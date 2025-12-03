@@ -60,8 +60,8 @@ def yt_earnings_spec_country():
     
 
     df1=df.loc[ (df["Country"]=="United States")]
-    df1=df1.sort_values("highest_yearly_earnings",ascending=False)
-    df1=df1.head(5)
+    df1=df1.sort_values("highest_yearly_earnings",ascending=True)
+    df1=df1.tail(5)
 
     df1.plot(kind="bar",x="Youtuber",y="highest_yearly_earnings")
     plt.xticks(rotation=90)
@@ -82,4 +82,28 @@ def yt_unempreate_to_ytsuccess():
     plt.xticks(rotation=90)
     plt.show()
     
-yt_unempreate_to_ytsuccess()
+def urban_pop_to_dens_yt():
+
+    FILE_PATH=Path(__file__).parent 
+
+    CSV_PATH=(FILE_PATH/"Global YouTube StatisticsFixed.csv")
+
+    df=pd.read_csv(CSV_PATH)
+
+    df1=df["Urban_population"].value_counts()
+    print(df1.head(1))
+
+def dens_channel_month():
+
+
+    FILE_PATH=Path(__file__).parent 
+
+    CSV_PATH=(FILE_PATH/"Global YouTube StatisticsFixed.csv")
+
+    df=pd.read_csv(CSV_PATH)
+
+    df1=df["created_month"].value_counts()
+    print(df1.head(1))
+
+
+urban_pop_to_dens_yt()
