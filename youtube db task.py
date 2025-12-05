@@ -105,5 +105,96 @@ def dens_channel_month():
     df1=df["created_month"].value_counts()
     print(df1.head(1))
 
+def success_to_years():
+    FILE_PATH=Path(__file__).parent 
 
-urban_pop_to_dens_yt()
+    CSV_PATH=(FILE_PATH/"Global YouTube StatisticsFixed.csv")
+
+    df=pd.read_csv(CSV_PATH)
+
+    df1=df.groupby("created_year")[["highest_yearly_earnings"]].max()
+    df1=df1.reset_index()
+    df1=df1.head(250)
+    df1.plot(kind="bar",x="created_year",y="highest_yearly_earnings")
+    plt.xticks(rotation=90)
+    plt.show()
+
+def category_most_views():
+    FILE_PATH=Path(__file__).parent 
+
+    CSV_PATH=(FILE_PATH/"Global YouTube StatisticsFixed.csv")
+
+    df=pd.read_csv(CSV_PATH)
+
+    df1=df.groupby("category")[["video views"]].sum()
+    df1=df1.reset_index()
+    df1=df1.head(100)
+
+    df1.plot(kind="bar",x="category",y="video views")
+    plt.xticks(rotation=90)
+    plt.show()
+
+def lowest_education():
+    FILE_PATH=Path(__file__).parent 
+
+    CSV_PATH=(FILE_PATH/"Global YouTube StatisticsFixed.csv")
+
+    df=pd.read_csv(CSV_PATH)
+
+    df1=df.groupby("Country")[["Gross tertiary education enrollment (%)"]].mean()
+
+    df1=df1.reset_index()
+
+    df1.plot(kind="bar",x="Country",y="Gross tertiary education enrollment (%)")
+    plt.xticks(rotation=90)
+    plt.show()
+
+def lowest_education_youtubers():
+    FILE_PATH=Path(__file__).parent 
+
+    CSV_PATH=(FILE_PATH/"Global YouTube StatisticsFixed.csv")
+
+    df=pd.read_csv(CSV_PATH)
+
+    df1=df.loc[ (df["Country"]=="Samoa")]
+    df1=df1.groupby("Youtuber")[["video views"]].max()
+
+    df1=df1.reset_index()
+
+    df1.plot(kind="bar",x="Youtuber",y="video views")
+    plt.xticks(rotation=90)
+    plt.show()
+
+def successful_youtubers_2013():
+
+    FILE_PATH=Path(__file__).parent 
+
+    CSV_PATH=(FILE_PATH/"Global YouTube StatisticsFixed.csv")
+
+    df=pd.read_csv(CSV_PATH)
+
+    df1=df.loc[ (df["created_year"]==2013)]
+
+    df1=df1.groupby("Youtuber")[["video views"]].sum()
+    df1=df1.reset_index()
+
+    df1.plot(kind="bar",x="Youtuber",y="video views")
+    plt.xticks(rotation=90)
+    plt.show()
+
+def views_most_year():
+
+    FILE_PATH=Path(__file__).parent 
+
+    CSV_PATH=(FILE_PATH/"Global YouTube StatisticsFixed.csv")
+
+    df=pd.read_csv(CSV_PATH)
+
+    df1=df.groupby("created_month")[["uploads"]].sum()
+    df1=df1.reset_index()
+
+    df1.plot(kind="bar",x="created_month",y="uploads")
+    plt.xticks(rotation=90)
+    plt.show()
+
+views_most_year()
