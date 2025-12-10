@@ -196,3 +196,4 @@ def views_most_year():
     df1.plot(kind="bar",x="created_month",y="uploads")
     plt.xticks(rotation=90)
     plt.show()
+lowest_education_youtubers()
