@@ -1,6 +1,27 @@
-alphabet=["A","B","C","D","E","F","G","H","I","J"]
 
+#!  ________.____    ________ __________    _____  .____      ____   _________ __________.___   _____ __________.____     ___________ _________
+#! /  _____/|    |   \_____  \\______   \  /  _  \ |    |     \   \ /   /  _  \\______   \   | /  _  \\______   \    |    \_   _____//   _____/
+#!/   \  ___|    |    /   |   \|    |  _/ /  /_\  \|    |      \   Y   /  /_\  \|       _/   |/  /_\  \|    |  _/    |     |    __)_ \_____  \ 
+#!\    \_\  \    |___/    |    \    |   \/    |    \    |___    \     /    |    \    |   \   /    |    \    |   \    |___  |        \/        \
+#! \______  /_______ \_______  /______  /\____|__  /_______ \    \___/\____|__  /____|_  /___\____|__  /______  /_______ \/_______  /_______  /
+#!        \/        \/       \/       \/         \/        \/                 \/       \/            \/       \/        \/        \/        \/ 
+
+
+alphabet=["A","B","C","D","E","F","G","H","I","J"]
 board=[]
+hits=0
+turns=0
+
+
+#!  ________.____    ________ __________    _____  .____      ____   _________ __________.___   _____ __________.____     ___________ _________
+#! /  _____/|    |   \_____  \\______   \  /  _  \ |    |     \   \ /   /  _  \\______   \   | /  _  \\______   \    |    \_   _____//   _____/
+#!/   \  ___|    |    /   |   \|    |  _/ /  /_\  \|    |      \   Y   /  /_\  \|       _/   |/  /_\  \|    |  _/    |     |    __)_ \_____  \ 
+#!\    \_\  \    |___/    |    \    |   \/    |    \    |___    \     /    |    \    |   \   /    |    \    |   \    |___  |        \/        \
+#! \______  /_______ \_______  /______  /\____|__  /_______ \    \___/\____|__  /____|_  /___\____|__  /______  /_______ \/_______  /_______  /
+#!        \/        \/       \/       \/         \/        \/                 \/       \/            \/       \/        \/        \/        \/ 
+
+
+
 for i in range (10):
     board.append(["-","-","-","-","-","-","-","-","-","-"])
 
@@ -70,7 +91,7 @@ def valid_check(column,row):
 
             if row <= 9 and row >= 0:
                 
-                if board[row][column]=="*":
+                if board[row][column]=="X"or board[column][row]=="*":
                     
                     print("you have already hit here, please try again")
                     return False
@@ -90,18 +111,22 @@ def valid_check(column,row):
 
 def player_turn():
     valid=False
+    global turns
+    global hits
+
+    game_setup(1)
     while valid==False:
+
         count=0
         count2=0
     
         try:
             column=int(input("\nwhat column would you like to move in (1-10): "))-1
-            row=input("what row would you like to move in (A-J): " )
+            row=str.upper(input("what row would you like to move in (A-J): " ))
 
             for i in alphabet:
                 if row==i:
                     row=count
-                    print(row)
                 else:
                     count+=1
                     
@@ -112,6 +137,18 @@ def player_turn():
         if count2==0: #if it can pass through the try except correctly, it will check if the inputs are valid
             valid=valid_check(column,row)
 
-    print("DGFDGFJNGGDFJN")
+    if board[row][column]=="-": #if the users input is a miss 
+        print("miss")
+        board[row][column]="*"
+        turns+=1
+
+    elif board[row][column]=="A" or board[row][column]=="B" or board[row][column]=="C" or board[row][column]=="D":
+        print("hit")
+        board[row][column]="X"
+        turns+=1
+        hits+=1
+
+    print_board()
+    
 
 player_turn()
