@@ -116,13 +116,35 @@ def valid_check(column,row):
 
 def valid_input_check(column,row):
 
-    if column <= 9 and column >= 0: #checks if column/row is within 0, 1 and 2, and if there is already an X or O in the spot, if not it will return "False"
+    if column <= 9 and column > 0: #checks if column/row is within 0, 1 and 2, and if there is already an X or O in the spot, if not it will return "False"
 
-            if row <= 9 and row >= 0:
-                
-                if board[row][column]!="-":
+            if row <= 9 and row > 0:
+                for i in range (10):
+                    if board[column][row-i]!="-":
                     
-                    return False
+                        return False
+                    
+                else:
+                    return True
+                
+            else: 
+ 
+                return False
+
+    else: 
+        return False
+
+
+
+def valid_input_check_y(column,row):
+
+    if column <= 9 and column > 0: #checks if column/row is within 0, 1 and 2, and if there is already an X or O in the spot, if not it will return "False"
+
+            if row <= 9 and row > 0:
+                for i in range (10):
+                    if board[column-i][row]!="-":
+                    
+                        return False
                     
                 else:
                     return True
@@ -153,31 +175,48 @@ def game_over_check():
 
 
 
-def place_ship():
-    count=0
-    count2=0
+def place_ship(ship_length, letter):
+
     valid=False
-    while count<5:
 
-        rotation=random.randint(0,1)
+    rotation=random.randint(0,1)
 
-        place_length=length[count]
-        print(rotation)
 
-        for i in range (place_length):
+    if rotation==0: #runs for horizontal
+        while valid==False:
 
-            if rotation==0: #runs for horizontal]
-                while valid==False:
+            x=random.randint(0,9)
+            y=random.randint(0,9)
 
-                    x=random.randint(0,9)
-                    y=random.randint(0,9)
+            y=y+ship_length
+            for i in range (ship_length):
 
-                    y+=1
-                    
-                    valid=valid_input_check(x,y)
+                valid=valid_input_check(x,y) #checks if the space is valid for each spot
+    
+        if valid==True:
+            for i in range (ship_length): #if the space is valid it will place it on the board
 
-                board[x][y]=alphabet[count]
-        count+=1
+                board[x][y]=letter
+                y-=1
+
+
+    else: #runs for vertical
+        while valid==False:
+
+            x=random.randint(0,9)
+            y=random.randint(0,9)
+
+            x=x+ship_length
+            for i in range (ship_length):
+
+                valid=valid_input_check(x,y) #checks if the space is valid for each spot
+    
+        if valid==True:
+            for i in range (ship_length): #if the space is valid it will place it on the board
+
+                board[x][y]=letter
+                y-=1
+
 
 
 def player_turn():
@@ -234,5 +273,9 @@ def player_turn():
             print("you lose")
             return
 
-place_ship()
+place_ship(5,"A")
+place_ship(4,"B")
+place_ship(3,"C")
+place_ship(3,"D")
+place_ship(2,"E")
 print_board()
