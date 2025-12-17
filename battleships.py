@@ -1,3 +1,6 @@
+import random
+
+
 
 #!  ________.____    ________ __________    _____  .____      ____   _________ __________.___   _____ __________.____     ___________ _________
 #! /  _____/|    |   \_____  \\______   \  /  _  \ |    |     \   \ /   /  _  \\______   \   | /  _  \\______   \    |    \_   _____//   _____/
@@ -11,6 +14,8 @@ alphabet=["A","B","C","D","E","F","G","H","I","J"]
 board=[]
 hits=0
 turns=0
+win=False
+length=[5,4,3,3,2]
 
 
 #!  ________.____    ________ __________    _____  .____      ____   _________ __________.___   _____ __________.____     ___________ _________
@@ -27,8 +32,8 @@ for i in range (10):
 
 
 def board_reset():
-    for i in range (0,7):
-        for j in range (0,7):
+    for i in range (0,10):
+        for j in range (0,10):
             board[i][j]="-"
 
 
@@ -109,46 +114,125 @@ def valid_check(column,row):
 
 
 
-def player_turn():
+def valid_input_check(column,row):
+
+    if column <= 9 and column >= 0: #checks if column/row is within 0, 1 and 2, and if there is already an X or O in the spot, if not it will return "False"
+
+            if row <= 9 and row >= 0:
+                
+                if board[row][column]!="-":
+                    
+                    return False
+                    
+                else:
+                    return True
+                
+            else: 
+ 
+                return False
+
+    else: 
+        return False
+
+
+
+def has_win():
+    if hits==15:
+        print("you win yay")
+        return True
+    else:
+        return False
+
+
+
+def game_over_check(): 
+    if turns==20:
+        return True
+    else:
+        return False
+
+
+
+def place_ship():
+    count=0
+    count2=0
     valid=False
+    while count<5:
+
+        rotation=random.randint(0,1)
+
+        place_length=length[count]
+        print(rotation)
+
+        for i in range (place_length):
+
+            if rotation==0: #runs for horizontal]
+                while valid==False:
+
+                    x=random.randint(0,9)
+                    y=random.randint(0,9)
+
+                    y+=1
+                    
+                    valid=valid_input_check(x,y)
+
+                board[x][y]=alphabet[count]
+        count+=1
+
+
+def player_turn():
+
     global turns
     global hits
-
+    global win
     game_setup(1)
-    while valid==False:
-
-        count=0
-        count2=0
     
-        try:
-            column=int(input("\nwhat column would you like to move in (1-10): "))-1
-            row=str.upper(input("what row would you like to move in (A-J): " ))
+    while win==False:
 
-            for i in alphabet:
-                if row==i:
-                    row=count
-                else:
-                    count+=1
-                    
-        except:
-            print("This is invalid, please try again") #checks if input is an integer, if not it will return "False"
-            count2=1
+        valid=False
+        game_over=False
+
+        while valid==False:
+
+            count=0
+            count2=0
         
-        if count2==0: #if it can pass through the try except correctly, it will check if the inputs are valid
-            valid=valid_check(column,row)
+            try:
+                column=int(input("\nwhat column would you like to move in (1-10): "))-1
+                row=str.upper(input("what row would you like to move in (A-J): " ))
 
-    if board[row][column]=="-": #if the users input is a miss 
-        print("miss")
-        board[row][column]="*"
-        turns+=1
+                for i in alphabet:
+                    if row==i:
+                        row=count
+                    else:
+                        count+=1
+                        
+            except:
+                print("This is invalid, please try again") #checks if input is an integer, if not it will return "False"
+                count2=1
+            
+            if count2==0: #if it can pass through the try except correctly, it will check if the inputs are valid
+                valid=valid_check(column,row)
 
-    elif board[row][column]=="A" or board[row][column]=="B" or board[row][column]=="C" or board[row][column]=="D":
-        print("hit")
-        board[row][column]="X"
-        turns+=1
-        hits+=1
+        if board[row][column]=="-": #if the users input is a miss 
+            print("miss")
+            board[row][column]="*"
+            turns+=1
 
-    print_board()
-    
+        elif board[row][column]=="A" or board[row][column]=="B" or board[row][column]=="C" or board[row][column]=="D": #if it hits
+            print("hit")
+            board[row][column]="X"
+            turns+=1
+            hits+=1
 
-player_turn()
+        print_board()
+        win=has_win()
+
+        game_over=game_over_check()
+        if game_over==True:
+
+            print("you lose")
+            return
+
+place_ship()
+print_board()
