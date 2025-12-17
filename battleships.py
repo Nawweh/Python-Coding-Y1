@@ -120,12 +120,13 @@ def valid_input_check(column,row):
 
             if row <= 9 and row > 0:
                 for i in range (10):
+
                     if board[column][row-i]!="-":
                     
                         return False
                     
-                else:
-                    return True
+                   
+                return True
                 
             else: 
  
@@ -142,12 +143,13 @@ def valid_input_check_y(column,row):
 
             if row <= 9 and row > 0:
                 for i in range (10):
+
                     if board[column-i][row]!="-":
                     
                         return False
                     
-                else:
-                    return True
+                    
+                return True
                 
             else: 
  
@@ -155,7 +157,7 @@ def valid_input_check_y(column,row):
 
     else: 
         return False
-
+    
 
 
 def has_win():
@@ -180,7 +182,6 @@ def place_ship(ship_length, letter):
     valid=False
 
     rotation=random.randint(0,1)
-
 
     if rotation==0: #runs for horizontal
         while valid==False:
@@ -209,13 +210,13 @@ def place_ship(ship_length, letter):
             x=x+ship_length
             for i in range (ship_length):
 
-                valid=valid_input_check(x,y) #checks if the space is valid for each spot
+                valid=valid_input_check_y(x,y) #checks if the space is valid for each spot
     
         if valid==True:
             for i in range (ship_length): #if the space is valid it will place it on the board
 
                 board[x][y]=letter
-                y-=1
+                x-=1
 
 
 
