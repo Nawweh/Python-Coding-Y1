@@ -12,6 +12,7 @@ import random
 
 alphabet=["A","B","C","D","E","F","G","H","I","J"]
 board=[]
+board_player=[]
 hits=0
 turns=0
 win=False
@@ -29,12 +30,20 @@ length=[5,4,3,3,2]
 
 for i in range (10):
     board.append(["-","-","-","-","-","-","-","-","-","-"])
+    board_player.append(["-","-","-","-","-","-","-","-","-","-"])
 
 
 def board_reset():
     for i in range (0,10):
         for j in range (0,10):
             board[i][j]="-"
+
+
+
+def board_player_reset():
+    for i in range (0,10):
+        for j in range (0,10):
+            board_player[i][j]="-"
 
 
 
@@ -55,7 +64,26 @@ def print_board():
             print(board[i][j], end="   |   ")
         print("")
 
-level=3
+
+
+def print_player_board():
+    for x in range (0,10): #prints the numbers at the top
+
+        if x==9:
+            print("    ", x+1, end=" ")
+        else:  
+            print("     ", x+1, end=" ")
+
+    print()
+    for i in range (0,10):
+        print("  ---------------------------------------------------------------------------------")
+        for j in range (0,10):
+            if j==0:
+                print(alphabet[i], end=" |   ") #adds the vertical lines inbetween each time a new line happens
+            print(board_player[i][j], end="   |   ")
+        print("")
+
+
 
 def game_setup(level): #prebuilt boards for testing 
     if level==1:
@@ -94,9 +122,9 @@ def valid_check(column,row):
 
     if column <= 9 and column >= 0: #checks if column/row is within 0, 1 and 2, and if there is already an X or O in the spot, if not it will return "False"
 
-            if row <= 9 and row >= 0:
+            if int(row) <= 9 and row >= 0:
                 
-                if board[row][column]=="X"or board[column][row]=="*":
+                if board_player[row][column]=="X"or board_player[column][row]=="*":
                     
                     print("you have already hit here, please try again")
                     return False
@@ -161,7 +189,7 @@ def valid_input_check_y(column,row):
 
 
 def has_win():
-    if hits==15:
+    if hits==17:
         print("you win yay")
         return True
     else:
@@ -170,7 +198,7 @@ def has_win():
 
 
 def game_over_check(): 
-    if turns==20:
+    if turns==30:
         return True
     else:
         return False
@@ -225,7 +253,7 @@ def player_turn():
     global turns
     global hits
     global win
-    game_setup(1)
+
     
     while win==False:
 
@@ -242,10 +270,13 @@ def player_turn():
                 row=str.upper(input("what row would you like to move in (A-J): " ))
 
                 for i in alphabet:
+
                     if row==i:
                         row=count
+
                     else:
                         count+=1
+                print(row)
                         
             except:
                 print("This is invalid, please try again") #checks if input is an integer, if not it will return "False"
@@ -254,18 +285,21 @@ def player_turn():
             if count2==0: #if it can pass through the try except correctly, it will check if the inputs are valid
                 valid=valid_check(column,row)
 
+        
+
         if board[row][column]=="-": #if the users input is a miss 
+            board_player[row][column]="*"
+            print_player_board()
             print("miss")
-            board[row][column]="*"
             turns+=1
 
-        elif board[row][column]=="A" or board[row][column]=="B" or board[row][column]=="C" or board[row][column]=="D": #if it hits
+        elif board[row][column]=="A" or board[row][column]=="B" or board[row][column]=="C" or board[row][column]=="D" or board[row][column]=="E":#if it hits it will say "hit" and turn that spot into an x then count "hits up by 1"
+            board_player[row][column]="X"
+            print_player_board()
             print("hit")
-            board[row][column]="X"
             turns+=1
             hits+=1
 
-        print_board()
         win=has_win()
 
         game_over=game_over_check()
@@ -273,10 +307,14 @@ def player_turn():
 
             print("you lose")
             return
+    
+    print("you win")
+    return
 
 place_ship(5,"A")
 place_ship(4,"B")
 place_ship(3,"C")
 place_ship(3,"D")
 place_ship(2,"E")
-print_board()
+print_player_board()
+player_turn()
