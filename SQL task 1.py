@@ -41,12 +41,13 @@ def create_tables():
         conn.execute('''CREATE TABLE IF NOT EXISTS Enrollments(
                     enrollment_id INTEGER PRIMARY KEY,
                     enrollment_date DATE,
-                    course_id INTEGER NOT NULL,
                     student_id INTEGER NOT NULL,
+                    course_id INTEGER NOT NULL,
                     FOREIGN KEY (course_id) REFERENCES Courses(course_id),
                     FOREIGN KEY (student_id) REFERENCES Students(student_id)
                     );''')
         conn.commit
     
+
 create_tables()
 
