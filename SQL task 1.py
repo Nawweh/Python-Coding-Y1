@@ -1,4 +1,5 @@
 import sqlite3
+import bcrypt
 
 from pathlib import Path
 FILE_PATH=Path(__file__).parent
@@ -47,7 +48,170 @@ def create_tables():
                     FOREIGN KEY (student_id) REFERENCES Students(student_id)
                     );''')
         conn.commit
-    
+    with get_db_connection() as conn:
+        conn.execute('''CREATE TABLE IF NOT EXISTS login_details(
+                    login_id INTEGER PRIMARY KEY,
+                    hash_pass CHAR(128),
+                    student_id INTEGER,
+                    professor_id INTEGER,
+                    FOREIGN KEY (student_id) REFERENCES Students(student_id),
+                    FOREIGN KEY (professor_id) REFERENCES Professors(professor_id)
+                    );''')
+        conn.commit
 
-create_tables()
+
+
+def delete_table():
+    with get_db_connection() as conn:
+        conn.execute('''DROP TABLE login_details;''')
+        conn.commit
+
+
+def column_add():
+    with get_db_connection() as conn:
+        conn.execute('''ALTER TABLE Students
+                     ADD student grades CHAR(2);''')
+        conn.commit
+
+
+
+def insert_data():
+    with get_db_connection() as conn:
+        conn.execute('''INSERT INTO Enrollments (enrollment_date, student_id, course_id) 
+                     VALUES ('2025-09-03', 1, 3); ''')
+        
+
+
+def update_data():
+    with get_db_connection() as conn:
+        conn.execute('''UPDATE Students
+                     SET student='F'
+                     WHERE student_id=2''')
+        
+update_data()
+        
+def select_professor():
+    Professor=input("give me the id of a professor: ")
+
+    with get_db_connection() as conn:
+        course = conn.execute('''SELECT *
+                     FROM Courses
+                     WHERE professor_id=(?)''',(Professor,)).fetchall()
+        for i in course:
+            print(f"the professor teaches {i['course_name']}")
+        
+
+
+def students_from_courses():
+    course=input("give me the id of a course: ")
+
+    with get_db_connection() as conn:
+        student = conn.execute('''SELECT *
+                     FROM Enrollments
+                     WHERE student_id=(?)''',(course,)).fetchall()
+        for i in student:
+            print(f" student {i['student_id']} enrolls in {i['course_id']}")
+
+
+
+def register_login():
+    role=int(input("are you a student? (1)\nare you a professor? (2)\n"))
+
+    if role==1:
+            student_id=int(input("what is your student id?: "))
+
+            password=input("create a password: ")
+
+            password=password.encode("utf-8")
+            salt=bcrypt.gensalt()
+            hash=bcrypt.hashpw(password, salt)
+
+            
+            with get_db_connection() as conn:
+                conn.execute('''INSERT INTO login_details (hash_pass, student_id) 
+                            VALUES (?,?); ''',(hash, student_id))
+                
+    else: 
+
+        professor_id=int(input("what is your professor id?: "))
+
+        password=input("create a password: ")
+
+        password=password.encode("utf-8")
+        salt=bcrypt.gensalt()
+        hash=bcrypt.hashpw(password, salt)
+
+        
+        with get_db_connection() as conn:
+            conn.execute('''INSERT INTO login_details (hash_pass, professor_id) 
+                        VALUES (?,?); ''',(hash, professor_id))
+            
+
+
+
+
+
+def check_login():
+    role=int(input("are you a student? (1)\nare you a professor? (2)\n"))
+
+    if role==1:
+        stu_id_input=int(input("what is your student id?: "))
+
+        with get_db_connection() as conn:
+            student = conn.execute('''SELECT student_id
+                        FROM login_details
+                        WHERE student_id=(?)''',(stu_id_input,)).fetchone()
+            student_id=student[0]
+            
+            hash_pass = conn.execute('''SELECT hash_pass
+                        FROM login_details
+                        WHERE student_id=(?)''',(stu_id_input,)).fetchone()
+            hash=hash_pass[0]
+            
+        password2=input("input your password: ")
+        password2=password2.encode("utf-8")
+        hash2=bcrypt.checkpw(password2, hash)
+
+
+        if student_id==stu_id_input:
+            if hash2==True:
+                print("access granted")
+            else:
+                print("access denied")
+
+        else:
+                print("access denied")
+
+
+
+    else:
+        prof_id_input=int(input("what is your professor id?: "))
+
+        with get_db_connection() as conn:
+            professor = conn.execute('''SELECT professor_id
+                        FROM login_details
+                        WHERE professor_id=(?)''',(prof_id_input,)).fetchone()
+            professor_id=professor[0]
+            
+            hash_pass = conn.execute('''SELECT hash_pass
+                        FROM login_details
+                        WHERE professor_id=(?)''',(prof_id_input,)).fetchone()
+            hash=hash_pass[0]
+            
+        password2=input("input your password: ")
+        password2=password2.encode("utf-8")
+        hash2=bcrypt.checkpw(password2, hash)
+
+
+        if professor_id==prof_id_input:
+            if hash2==True:
+                print("access granted")
+            else:
+                print("access denied")
+
+        else:
+                print("access denied")
+
+
+
 

@@ -25,7 +25,7 @@ def create_tables():
                      jobID INTEGER PRIMARY KEY,
                      title TEXT NOT NULL,
                      bossID INT,
-                     FOREIGN KEY (bossID) REFERENCES company(ID)
+                     FOREIGN KEY (bossID) REFERENCES company(id)
                      ); ''')
         conn.commit()
 
@@ -59,6 +59,6 @@ def select_all_employees():
         for i in employees:
             print(f"the name is {i['name']}, they are {i['age']} old. \n They earn an amazing {i['salary']} per year")
 
-create_tables()
-select_all_employees()
+
+select_employees()
 
