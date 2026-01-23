@@ -82,13 +82,19 @@ def insert_data():
         
 
 
+def alter_table():
+    with get_db_connection() as conn:
+        conn.execute('''ALTER TABLE Students
+                     RENAME COLUMN student TO student_grade''')
+
+
+
 def update_data():
     with get_db_connection() as conn:
         conn.execute('''UPDATE Students
-                     SET student='F'
-                     WHERE student_id=2''')
+                     SET student='E'
+                     WHERE student_id=3''')
         
-update_data()
         
 def select_professor():
     Professor=input("give me the id of a professor: ")
@@ -145,11 +151,22 @@ def register_login():
         with get_db_connection() as conn:
             conn.execute('''INSERT INTO login_details (hash_pass, professor_id) 
                         VALUES (?,?); ''',(hash, professor_id))
-            
 
 
 
-
+def student_grade_ui():
+    run=True
+    while run==True:
+        choice=int(input("would you like to alter grades (1) or exit the interface (2)\n"))
+        if choice==1:
+            student_id=int(input("give the id of the student you would like to alter the grade of?: "))
+            student_grade=input("what is the grade that you would like to input?: ")
+            with get_db_connection() as conn:
+                conn.execute('''UPDATE Students
+                     SET student_grade=(?)
+                     WHERE student_id=(?)''',(student_grade, student_id))
+        else:
+            run=False
 
 def check_login():
     role=int(input("are you a student? (1)\nare you a professor? (2)\n"))
@@ -214,4 +231,12 @@ def check_login():
 
 
 
+def report_card():
+    student_id=int(input("what is your student id?: "))
+    with get_db_connection() as conn:
+        stu_grade = conn.execute('''SELECT student_grade
+                        FROM login_details
+                        WHERE student_id=(?)''',(student_id,)).fetchone()
+    print(f"your grade is {stu_grade[0]}")
 
+report_card()
