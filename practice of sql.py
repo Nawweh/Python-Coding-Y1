@@ -29,6 +29,8 @@ def create_tables():
                      ); ''')
         conn.commit()
 
+
+
 def insert_data():
     with get_db_connection() as conn:
         conn.execute('''INSERT INTO company (name, age, address, salary) 
@@ -45,12 +47,16 @@ def insert_data():
             
             conn.execute('''INSERT INTO job(title, bossID) VALUES ("chief toastie maker", 1) ''')
 
+
+
 def select_employees():
     with get_db_connection() as conn:
         user_id = 1
         employees = conn.execute('''SELECT name, age, address, salary FROM company
                                  WHERE id = (?) ''',(user_id,)).fetchone()
         print(f"the name is {employees['name']}, they are {employees['age']} old. \n They earn an amazing {employees['salary']} per year")
+
+
 
 def select_all_employees():
     with get_db_connection() as conn:

@@ -193,6 +193,7 @@ def check_login():
         if student_id==stu_id_input:
             if hash2==True:
                 print("access granted")
+                report_card(stu_id_input)
             else:
                 print("access denied")
 
@@ -223,6 +224,7 @@ def check_login():
         if professor_id==prof_id_input:
             if hash2==True:
                 print("access granted")
+                student_grade_ui()
             else:
                 print("access denied")
 
@@ -231,12 +233,11 @@ def check_login():
 
 
 
-def report_card():
-    student_id=int(input("what is your student id?: "))
+def report_card(student_id):
     with get_db_connection() as conn:
         stu_grade = conn.execute('''SELECT student_grade
-                        FROM login_details
+                        FROM Students
                         WHERE student_id=(?)''',(student_id,)).fetchone()
     print(f"your grade is {stu_grade[0]}")
 
-report_card()
+check_login()
