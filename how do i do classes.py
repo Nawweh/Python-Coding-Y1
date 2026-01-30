@@ -20,12 +20,6 @@ class session:
 
 
 
-    def register(self):
-        self.register = self.room + " " + self.time + " " +self.Lecturer
-        return self.register
-
-
-
 
 class course:
     def __init__(self):
@@ -33,12 +27,22 @@ class course:
 
 
 
+    def register(self):
+        for i in self.students:
+            print(i)
 
-class Timetable():
-    def __init__(self, name, session1, session2, session3):
+
+
+
+class Timetable:
+    def __init__(self, name, *sessions):
         self.name=name
-        self.sessions=[session1, session2, session3]
-
+        p_holder=[]
+        for i in sessions:
+            pholder=pholder.append[i]
+        self.sessions=pholder
+        
+            
 
 
 
@@ -59,6 +63,6 @@ def main():
 
     print("lecturer 3 =",lecturer3.get_full_name())
 
-    print(Timetable("P",God, how_to_eat, bob_science))
+    print(Timetable("p",God,how_to_eat,bob_science))
 
 main()
