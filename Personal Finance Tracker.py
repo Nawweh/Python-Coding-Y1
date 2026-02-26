@@ -1,5 +1,5 @@
 import sqlite3
-
+import time
 from os import system
 from os import name as os_name
 def clear_tui(toggle=True):
@@ -11,6 +11,8 @@ def clear_tui(toggle=True):
 from pathlib import Path
 FILE_PATH=Path(__file__).parent
 DB_PATH=(FILE_PATH/ "Finance_Tracker_DB")
+
+
 
 def get_db_connection(): #connects to the database file
     conn=sqlite3.connect(DB_PATH)
@@ -82,6 +84,8 @@ class Expense(Transaction_):
         self.type=type
         super().__init__(amount, date, category, description)
 
+
+
 def Income_Input():
     type="Income"
     amount=float(input("what is the cost of the transaction: "))
@@ -91,22 +95,58 @@ def Income_Input():
     Income_1=Income(amount, date, category, description, type)
 
 def Expense_Input():
-    type="Expense"
-    amount=float(input("what is the cost of the transaction: "))
-    date=input("what is the data that this happened (input as Y-M-D): ")
-    category=input("what is the category of the transaction: ")
-    description=input("give a description of the transaction (leave this blank for no description): ")
+    valid=False
+    count=1
+    while valid==False:
+        type="Expense"
+        amount=float(input("\nwhat is the cost of the transaction: "))
+        date=input("what is the data that this happened (input as Y-M-D): ")
+        category=input("what is the category of the transaction: ")
+        description=input("give a description of the transaction (leave this blank for no description): ")
+
+        with get_db_connection() as conn:
+            categories = conn.execute('''SELECT * FROM Categories''').fetchall()
+
+        for i in categories:
+            category_name=i["name"]
+            print(category_name)
+            if category_name==category:
+                count=0
+
+        if count==1:
+            print("this is invalid, please try again")
+            time.sleep(1)
+            valid==False
+        else:
+            valid==True
+            print("Input accepted")
+
     Expense_1=Expense(amount, date, category, description, type)
+    trans_add_DB(type,amount,date,category,description)
+    
 
 def Set_Budget():
     category=input("what category do you want to set a budget for:")
     budget=float(input("what is the budget: "))
     budget_1=Budget_(category, budget)
 
-def main():
-    run=True
-    while run==True:
-        options=int(input('''
+def Register_Category():
+    category=input("add a category: ")
+    with get_db_connection() as conn:
+        conn.execute('''INSERT INTO Categories(name)
+                            VALUES (?)''', (category,))
+        print("Category added")
+    
+        
+def trans_add_DB(type,amount,date,category,description):
+        with get_db_connection() as conn:
+            conn.execute('''INSERT INTO Transactions(amount, date, category, description, type) VALUES (?,?,?,?,?) ''',(amount, date, category, description, type))
+
+
+
+run=True
+while run==True:
+    options=int(input('''
 What do you want to do?
 1: Income
 2: Expense
@@ -114,22 +154,23 @@ What do you want to do?
 4: Update budgets
 5: View all transactions
 6: Generate a report
-7: Leave
+7: Create a category
+8: Leave
                           
 '''))
-        clear_tui()
-        
-        if options==1:
+    clear_tui()
+    match options:
+        case 1:
             Income_Input()
-
-        elif options==2:
+        
+        case 2:
             Expense_Input()
 
-        elif options==3:
+        case 3:
             Set_Budget()
 
-        elif options==7:
-            run=False
-
-create_DB()
-main()
+        case 7:
+            Register_Category()
+        
+        case 8:
+            run==False

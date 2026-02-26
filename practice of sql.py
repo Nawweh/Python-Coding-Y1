@@ -63,8 +63,9 @@ def select_all_employees():
         
         employees = conn.execute('''SELECT * FROM company''').fetchall()
         for i in employees:
-            print(f"the name is {i['name']}, they are {i['age']} old. \n They earn an amazing {i['salary']} per year")
+            employee1=i["name"]
+            print(employee1)
 
 
-select_employees()
+select_all_employees()
 
