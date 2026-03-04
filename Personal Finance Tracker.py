@@ -19,6 +19,8 @@ def get_db_connection(): #connects to the database file
     conn.row_factory = sqlite3.Row
     return conn
 
+
+
 def create_DB(): #creates the database
 
     with get_db_connection() as conn:
@@ -47,12 +49,16 @@ def create_DB(): #creates the database
                     );''')
         conn.commit
 
+
+
 class FinanceTracker_:
     def __init__(self,transaction):
         self.transaction=[]
         for i in transaction:
             self.transaction.append(i)
         
+
+
 class Transaction_:
     def __init__(self,amount,date,category,description):
         self.amount=amount
@@ -62,25 +68,44 @@ class Transaction_:
 
         self.Transaction=[self.amount, self.date, self.category, self.description]
     
+
+
     def print_transaction(self):
 
         return [self.amount, self.date, self.category, self.description]
     
+
+
     def calc_budget(self):
+
         try:
             with get_db_connection() as conn:
-                budget_info=conn.execute('''SELECT budget FROM Budgets
+                budget_info=conn.execute('''SELECT budget,category FROM Budgets
                             WHERE category = (?)''',(self.category,)).fetchone()
         except:
             print("sorry, there has been an error in the budget calculation, please add the right category and try again")
-                
+
+        print(budget_info["budget"])
         budget=budget_info["budget"]+self.amount
 
         with get_db_connection() as conn:
             conn.execute('''UPDATE Budgets
                      SET budget=(?)
                      WHERE category=(?)''',(budget, self.category))
+            
+
+
+    def is_over_budget(self):
+        with get_db_connection() as conn:
+                budget_info=conn.execute('''SELECT budget,category FROM Budgets
+                            WHERE category = (?)''',(self.category,)).fetchone()
         
+        budget=budget_info["budget"]
+        
+        if budget<0:
+            print(f"{self.category} has exceeded budget.")
+
+
 class Budget_:
     def __init__(self,category,budget_amount):
         self.category=category
@@ -98,46 +123,15 @@ class Expense(Transaction_):
         self.type=type
         super().__init__(amount, date, category, description)
 
-create_DB()
+
 
 def Income_Input():
     valid=False
     count=1
     while valid==False:
         type="Income"
-        amount=float(input("\nwhat is the cost of the transaction: "))
-        date=input("what is the data that this happened (input as Y-M-D): ")
-        category=input("what is the category of the transaction: ")
-        description=input("give a description of the transaction (leave this blank for no description): ")
-
-        with get_db_connection() as conn:
-            categories = conn.execute('''SELECT * FROM Categories''').fetchall()
-
-        for i in categories:
-            category_name=i["name"]
-            if category_name==category:
-                count=0
-
-        if count==1:
-            print("this is invalid, please try again")
-            time.sleep(1)
-            valid==False
-        else:
-            valid==True
-            print("Input accepted")
-
-    Income_1=Income(type, amount, date, category, description)
-    trans_add_DB(type,amount,date,category,description)
-
-    clear_tui()
-
-def Expense_Input():
-    valid=False
-    count=1
-    while valid==False:
-        type="Expense"
-        amount=float(input("\nwhat is the cost of the transaction: "))*-1
-        date=input("what is the data that this happened (input as Y-M-D): ")
+        amount=float(input("\nwhat is the cost of the transaction (input as 0.00): "))*-1
+        date=input("what is the date the transaction happened (input as YYYY-MM-DD): ")
         category=input("what is the category of the transaction: ")
         description=input("give a description of the transaction (leave this blank for no description): ")
 
@@ -158,12 +152,48 @@ def Expense_Input():
             print("Input accepted")
             time.sleep(.5)
 
-    Expense_1=Expense(type, amount, date, category, description)
-    trans_add_DB(type,amount,date,category,description)
+    Income_1=Income(amount, date, category, description, type)
+    Transaction_Add_DB(type,amount,date,category,description)
+
+    clear_tui()
+
+
+
+def Expense_Input():
+    valid=False
+    count=1
+    while valid==False:
+        type="Expense"
+        amount=float(input("\nwhat is the cost of the transaction (input as 0.00): "))*-1
+        date=input("what is the date the transaction happened (input as YYYY-MM-DD): ")
+        category=input("what is the category of the transaction: ")
+        description=input("give a description of the transaction (leave this blank for no description): ")
+
+        with get_db_connection() as conn:
+            categories = conn.execute('''SELECT * FROM Categories''').fetchall()
+
+        for i in categories:
+            category_name=i["name"]
+            if category_name==category:
+                count=0
+
+        if count==1:
+            print("this is invalid, please try again")
+            time.sleep(1)
+            valid=False
+        else:
+            valid=True
+            print("Input accepted")
+            time.sleep(.5)
+
+    Expense_1=Expense(amount, date, category, description, type)
+    Transaction_Add_DB(type,amount,date,category,description)
     clear_tui()
 
     Expense_1.calc_budget()
+    Expense_1.is_over_budget()
     
+
 
 def Set_Budget():
     count=1
@@ -185,14 +215,27 @@ def Set_Budget():
             print("this is invalid, please try again")
 
     budget_1=Budget_(category, budget)
-    add_budget(category, budget)
+    Add_Budget(category, budget)
 
     clear_tui()
 
-def add_budget(category, budget):
+
+
+def Add_Budget(category, budget):
     with get_db_connection() as conn:
         conn.execute('''INSERT INTO Budgets(category, budget)
                             VALUES (?,?)''', (category, budget))
+        
+
+
+def Update_Budget():
+    category=input("\nwhat category do you want to update the budget for: ")
+    budget=float(input("what is the budget: "))
+    with get_db_connection() as conn:
+        conn.execute('''UPDATE Budgets
+                     SET budget=(?)
+                     WHERE category=(?)''',(budget,category))
+
 
 
 def Register_Category():
@@ -212,28 +255,143 @@ def Register_Category():
                 count=1
             
     with get_db_connection() as conn:
-        conn.execute('''INSERT INTO Categories(name,)
-                            VALUES (?)''', (category,))
+        conn.execute('''INSERT INTO Categories (name)
+                        VALUES (?)''', (category,))
         print("Category added")
 
     clear_tui()
 
+
+
+def View_Transactions():
+    print("okay, here are your transactions")
+    time.sleep(1)
+    with get_db_connection() as conn:
+        Transactions=conn.execute('''SELECT * FROM Transactions''').fetchall()
+    for i in Transactions:
+        print(f'''Transaction ID: {i['transaction_id']}
+        Transaction type: {i['type']}
+        Cost of transaction: {i['amount']}
+        Date: {i['type']}
+        Added notes: {i['type']}
+        Category of transaction: {i['type']}\n''')
+    
+    temp=input("\npress any key to leave\n")
+
+
         
-def trans_add_DB(type,amount,date,category,description):
+def Transaction_Add_DB(type,amount,date,category,description):
         with get_db_connection() as conn:
             conn.execute('''INSERT INTO Transactions(type, amount, date, description, category)
                          VALUES (?,?,?,?,?)''', (type,amount,date,description,category))
             conn.commit()
 
-def view_categories():
+
+
+def Generate_Report():
+    Expenses=[]
+    Incomes=[]
+    net_balance=0.00
+
+    min_date=input("what is the minimum date of the range of transactions you would like to look at? (input as YYYY-MM-DD): ")
+    max_date=input("what is the maximum date of the range of transactions you would like to look at? (input as YYYY-MM-DD): ")
+
+    min_date_y=min_date[0:4]
+    min_date_m=min_date[5:7]
+    min_date_d=min_date[8:10]
+
+    min_date=min_date_y+min_date_m+min_date_d
+    min_date=int(min_date)
+
+    max_date_y=max_date[0:4]
+    max_date_m=max_date[5:7]
+    max_date_d=max_date[8:10]
+
+    max_date=max_date_y+max_date_m+max_date_d
+    max_date=int(max_date)
+
+
+    with get_db_connection() as conn:
+
+        transaction_dates=conn.execute('''SELECT * FROM Transactions''').fetchall()
+
+        expenses=conn.execute('''SELECT * FROM Transactions
+                              WHERE type=(?)''',("Expense",)).fetchall()
+        
+        incomes=conn.execute('''SELECT * FROM Transactions
+                              WHERE type=(?)''',("Income",)).fetchall()
+        
+        categories=conn.execute('''SELECT * FROM Categories''').fetchall()
+
+        budgets=conn.execute('''SELECT * FROM Budgets''')
+
+
+    print("Transaction summary: \n")
+    for i in transaction_dates:
+        date=i["date"]
+        date_y=date[0:4]
+        date_m=date[5:7]
+        date_d=date[8:10]
+
+        date=date_y+date_m+date_d
+        date=int(date)
+
+
+        if date>min_date and date<max_date:
+            print(f'''Transaction ID: {i['transaction_id']}
+            Transaction type: {i['type']}
+            Cost of transaction: {i['amount']}
+            Date: {i['date']}
+            Added notes: {i['description']}
+            Category of transaction: {i['category']}\n''')
+
+    temp=input("Press any key to see Net Balance: ")
+        
+    for i in incomes:
+        net_balance=net_balance+i["amount"]
+        
+    print(f"\nnet balance: {net_balance}")
+
+    temp=input("\nPress any key to see a breakdown of the incomes and expenses for each category: ")
+
+    for i in categories:
+        category=i["name"]
+        print(f"{category}:")
+
+        for x in expenses:
+            expense_category=x["category"]
+            if expense_category==category:
+                print(f'''\nTransaction type: Expense
+                        Amount: {x["amount"]}
+                        Date: {x["date"]}''')
+                
+        for j in incomes:
+            income_category=j["category"]
+            if income_category==category:
+                print(f'''\nTransaction type: Income
+                        Amount: {x["amount"]}
+                        Date: {x["date"]}''')
+                
+    temp=input("\nPress any key to see if any budgets have been exceeded: ")
+    
+    for i in budgets:
+        budget=i["budget"]
+        if budget<0:
+            print(f"{i[category]} is over budget by {budget*-1}")
+
+
+
+def View_Categories():
     print("okay, here you go")
     time.sleep(1)
     with get_db_connection() as conn:
         categories=conn.execute('''SELECT * FROM Categories''').fetchall()
     for i in categories:
         print(i["name"])
-    temp=input("\npress ENTER to leave\n")
+    temp=input("\npress any key to leave\n")
     clear_tui()
+
+
 
 run=True
 while run==True:
@@ -261,12 +419,21 @@ What do you want to do?
 
         case 3:
             Set_Budget()
+        
+        case 4:
+            Update_Budget()
+        
+        case 5:
+            View_Transactions()
+
+        case 6:
+            Generate_Report()
 
         case 7:
             Register_Category()
 
         case 8:
-            view_categories()
+            View_Categories()
 
         
         case 9:
