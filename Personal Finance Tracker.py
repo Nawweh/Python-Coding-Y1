@@ -1,12 +1,30 @@
+#  _____  ____  ____    ____  ____     __    ___      ______  ____    ____    __  __  _    ___  ____   __  __  __ 
+#|     ||    ||    \  /    ||    \   /  ]  /  _]    |      ||    \  /    |  /  ]|  |/ ]  /  _]|    \ |  ||  ||  |
+#|   __| |  | |  _  ||  o  ||  _  | /  /  /  [_     |      ||  D  )|  o  | /  / |  ' /  /  [_ |  D  )|  ||  ||  |
+#|  |_   |  | |  |  ||     ||  |  |/  /  |    _]    |_|  |_||    / |     |/  /  |    \ |    _]|    / |__||__||__|
+#|   _]  |  | |  |  ||  _  ||  |  /   \_ |   [_       |  |  |    \ |  _  /   \_ |     \|   [_ |    \  __  __  __ 
+#|  |    |  | |  |  ||  |  ||  |  \     ||     |      |  |  |  .  \|  |  \     ||  .  ||     ||  .  \|  ||  ||  |
+#|__|   |____||__|__||__|__||__|__|\____||_____|      |__|  |__|\_||__|__|\____||__|\_||_____||__|\_||__||__||__|
+                                                                                                                
+                                                                                            
 import sqlite3
 import time
 from os import system
 from os import name as os_name
+
+
+
+currencies={"£":1, "$":1.33, "€":1.15, "¥":208.33}
+
+
+
 def clear_tui(toggle=True):
     if os_name == "nt":
         system("cls")
     else:
         system("clear")
+
+
 
 from pathlib import Path
 FILE_PATH=Path(__file__).parent
@@ -49,7 +67,7 @@ def create_DB(): #creates the database
                     );''')
         conn.commit
 
-
+create_DB()
 
 class FinanceTracker_:
     def __init__(self,transaction):
@@ -83,7 +101,7 @@ class Transaction_:
                 budget_info=conn.execute('''SELECT budget,category FROM Budgets
                             WHERE category = (?)''',(self.category,)).fetchone()
         except:
-            print("sorry, there has been an error in the budget calculation, please add the right category and try again")
+            print("sorry, there has been an error in the budget calculation, please add the right category/budget and try again")
 
         print(budget_info["budget"])
         budget=budget_info["budget"]+self.amount
@@ -129,11 +147,26 @@ def Income_Input():
     valid=False
     count=1
     while valid==False:
-        type="Income"
-        amount=float(input("\nwhat is the cost of the transaction (input as 0.00): "))*-1
-        date=input("what is the date the transaction happened (input as YYYY-MM-DD): ")
-        category=input("what is the category of the transaction: ")
-        description=input("give a description of the transaction (leave this blank for no description): ")
+        try:
+            type="Income"
+            exchange_rate=currencies(currency)
+            amount=float(input("\nwhat is the cost of the transaction (format as 0.00): "))
+            amount=amount/exchange_rate
+
+            date=input("what is the date the transaction happened (format as YYYY-MM-DD): ")
+
+            if len(date)!=10:
+                print("please input a correct date (example: 2026-03-05)")
+                valid=False
+
+            category=input("what is the category of the transaction: ")
+            
+            description=input("give a description of the transaction (leave this blank for no description): ")
+
+
+        except:
+            print("this is invalid, please try again")
+            valid=False
 
         with get_db_connection() as conn:
             categories = conn.execute('''SELECT * FROM Categories''').fetchall()
@@ -163,11 +196,27 @@ def Expense_Input():
     valid=False
     count=1
     while valid==False:
-        type="Expense"
-        amount=float(input("\nwhat is the cost of the transaction (input as 0.00): "))*-1
-        date=input("what is the date the transaction happened (input as YYYY-MM-DD): ")
-        category=input("what is the category of the transaction: ")
-        description=input("give a description of the transaction (leave this blank for no description): ")
+        try:
+            type="Expense"
+            amount=float(input("\nwhat is the cost of the transaction (format as 0.00): "))*-1
+            amount=amount/exchange_rate
+
+            date=input("what is the date the transaction happened (format as YYYY-MM-DD): ")
+
+            if len(date)!=10:
+                print("please input a correct date (example: 2026-03-05)")
+                valid=False
+
+            category=input("what is the category of the transaction: ")
+
+            description=input("give a description of the transaction (leave this blank for no description): ")
+
+
+        except:
+            print("this is invalid, please try again")
+            valid=False
+
+
 
         with get_db_connection() as conn:
             categories = conn.execute('''SELECT * FROM Categories''').fetchall()
@@ -198,9 +247,11 @@ def Expense_Input():
 def Set_Budget():
     count=1
     while count==1:
-
-        category=input("\nwhat category do you want to set a budget for: ")
-        budget=float(input("what is the budget: "))
+        try:
+            category=input("\nwhat category do you want to set a budget for: ")
+            budget=float(input("what is the budget (format as 0.00): "))
+        except:
+            print("please input the budget in the correct format (0.00)")
 
         with get_db_connection() as conn:
                 categories = conn.execute('''SELECT * FROM Categories''').fetchall()
@@ -229,8 +280,11 @@ def Add_Budget(category, budget):
 
 
 def Update_Budget():
-    category=input("\nwhat category do you want to update the budget for: ")
-    budget=float(input("what is the budget: "))
+    try:
+        category=input("\nwhat category do you want to update the budget for: ")
+        budget=float(input("what is the budget (format as 0.00): "))
+    except:
+        print("this is invalid, please put the budget in the correct format (0.00) ")
     with get_db_connection() as conn:
         conn.execute('''UPDATE Budgets
                      SET budget=(?)
@@ -289,13 +343,19 @@ def Transaction_Add_DB(type,amount,date,category,description):
 
 
 def Generate_Report():
+    valid=False
     Expenses=[]
     Incomes=[]
     net_balance=0.00
+    while valid==False:
+        min_date=input("what is the minimum date of the range of transactions you would like to look at? (input as YYYY-MM-DD): ")
+        max_date=input("what is the maximum date of the range of transactions you would like to look at? (input as YYYY-MM-DD): ")
 
-    min_date=input("what is the minimum date of the range of transactions you would like to look at? (input as YYYY-MM-DD): ")
-    max_date=input("what is the maximum date of the range of transactions you would like to look at? (input as YYYY-MM-DD): ")
-
+    if len(min_date)!=10 or len(max_date)!=10:
+        valid=False
+        print("the date is invalid, please try again")
+    else:
+        valid=True
     min_date_y=min_date[0:4]
     min_date_m=min_date[5:7]
     min_date_d=min_date[8:10]
@@ -347,7 +407,10 @@ def Generate_Report():
 
     temp=input("Press any key to see Net Balance: ")
         
-    for i in incomes:
+    for i in incomes: 
+        net_balance=net_balance+i["amount"]
+
+    for i in expenses:
         net_balance=net_balance+i["amount"]
         
     print(f"\nnet balance: {net_balance}")
@@ -394,6 +457,9 @@ def View_Categories():
 
 
 run=True
+currency=input("type the symbol of the currency that you want to use for your inputs (auto translates to GBP): ")
+exchange_rate=currencies[currency]
+
 while run==True:
     options=0
     options=int(input('''
