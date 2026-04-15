@@ -85,7 +85,7 @@ def main():
     #Year with most uploads
     df1=df.groupby('created_month')['uploads'].sum()
     df1=df1.reset_index()
-    df1.plot(kind='bar',x='created_month',y='uploads')
+    df1.plot(kind='barh',x='created_month',y='uploads')
     plt.show()
    
 main()
