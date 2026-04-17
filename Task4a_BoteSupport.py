@@ -95,40 +95,20 @@ def get_time_type(): #gets the total days spent resolving each issue
     df1.plot(kind = "barh", x="Issue Type", y="Days To Resolve", ylabel="Days Spent Resolving")
     plt.show()
 
+def get_iss_res(): #gets a single region out of a list of all regions then pulls their issue and how it was resolved.
+    
+    regions = ["South West", "West Midlands","London","North Wales","South East","East of England","North East","East Midlands","Scotland","Yorkshire and The Humber","South Wales","North West","Northern Ireland"]
+    df = pd.read_csv("Task4a_data.csv")
+    
 
-def get_region():  
-    flag = True
-
-    while flag:
-
-        print("####################################################")
-        print("##### Issues and resolutions based on region #######")
-        print("####################################################")
-        print("")
-        print("############## Please select a Region ##############")
-        print("### 1. ")   
-        print("### 2. Delivery Issue") 
-        print("### 3. Collection Issue")  
-        print("### 4. Service Complaint")
-
-        choice = input('Enter your number selection here: ')
-
-        try:
-            choice = input('Enter your number selection here: ')
-            choice = int(choice)
-            if choice > 4 or choice < 1: #if choice is not valud, then it will re run the code from the loop
-                print("Sorry, you did not enter a valid option, the inputted number is out of range")
-            
-            else:
-                print("choice accepted")
-                flag = False
-        except:
-            print("\nSorry, you did not enter a valid option")
-            time.sleep(2)
-            flag = True
+    df1 = df.groupby("Region")["Issue Type"]
+    print(df1)
+    df1 = df.groupby("Region")["How Resolved"]
+    print(df1)
 
 df = pd.read_csv("Task4a_data.csv")
 df1=df["Region"]
+df1 = df1.drop_duplicates()
 print(df1)
 while RUN == True: #while the user wants it to run, the menu runs
     
@@ -143,7 +123,7 @@ while RUN == True: #while the user wants it to run, the menu runs
             get_time_type()
 
         case 3:
-            print("placeholder")
+            get_iss_res()
             
         case 4:
             print("Okay, leaving the menu...") #if the user selects 4, it ends the program
