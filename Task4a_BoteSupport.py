@@ -1,6 +1,5 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-import numpy
 import time
 
 RUN = True
@@ -96,20 +95,8 @@ def get_time_type(): #gets the total days spent resolving each issue
     df1.plot(kind = "barh", x="Issue Type", y="Days To Resolve", ylabel="Days Spent Resolving")
     plt.show()
 
-def get_iss_res(): #gets a single region out of a list of all regions then pulls their issue and how it was resolved.
-    
-    regions = ["South West", "West Midlands","London","North Wales","South East","East of England","North East","East Midlands","Scotland","Yorkshire and The Humber","South Wales","North West","Northern Ireland"]
-    df = pd.read_csv("Task4a_data.csv")
-
-    for i in df:
-        df1 = df.groupby("Region")["Issue Type"].values[0]
-        print(df1)
-
-
-df = pd.read_csv("Task4a_data.csv")
-df1=df["Region"]
-df1 = df1.drop_duplicates()
-print(df1)
+def issues_resolutions_region():
+    df= pd.read_csv("Task4a_data.csv")
 while RUN == True: #while the user wants it to run, the menu runs
     
     main_menu_choice = main_menu()
@@ -123,8 +110,7 @@ while RUN == True: #while the user wants it to run, the menu runs
             get_time_type()
 
         case 3:
-            time.sleep(2)
-            get_iss_res()
+            print("placeholder")
             
         case 4:
             print("Okay, leaving the menu...") #if the user selects 4, it ends the program
