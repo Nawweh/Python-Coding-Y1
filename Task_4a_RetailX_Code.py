@@ -1,4 +1,9 @@
 import pandas as pd
+import matplotlib.pyplot as plt
+from pathlib import Path
+
+FILE_PATH=Path(__file__).parent
+CSV_PATH=(FILE_PATH /"Task_4a_RetailX_data.csv")
 
 #Outputs the main menu and checks the user input
 def main_menu():
@@ -12,6 +17,8 @@ def main_menu():
         print("")
         print("--------------------- Main Menu --------------------- ")
         print("1. Total sales by product")
+        print("2. Sales of different categories of products")
+        print("3. Income and profit made by different products")
 
         choice = input('Enter your number selection here: ')
 
@@ -25,7 +32,7 @@ def main_menu():
 #Generates submenu of available product codes and allows user to select a product to view
 def get_product_id ():
 
-    df = pd.read_csv("Task4a_RetailX_data.csv")
+    df = pd.read_csv(CSV_PATH)
 
     product_codes = df["Product ID"].unique().tolist()
 
@@ -76,7 +83,7 @@ def get_date(start_end):
 
 #extracts data based on product ID within a user specified date range.
 def get_data_by_ID_and_date(product_id, start_date, end_date):
-    all_data = pd.read_csv("Task4a_RetailX_data.csv")
+    all_data = pd.read_csv(CSV_PATH)
     product_data = all_data.loc[all_data["Product ID"] == product_id].copy()
 
     product_data["Date"]= pd.to_datetime(product_data["Date"], format="%d/%m/%Y", errors="raise")
@@ -95,6 +102,36 @@ def calculate_total_sale (date_ID, product_id, start_date, end_date):
     total_sales = date_ID["Qty Sold"].sum()
     print('The total number of sales for product {}, between {} and {} was: {}'.format(product_id, start_date, end_date, total_sales))
 
+def sales_dif_cat(): #this shows the amount of sales dependent on the products category
+    df = pd.read_csv(CSV_PATH)
+    df1 = df.groupby("Category")["Qty Sold"].sum() #adds up the total sales by category
+    df1.reset_index()
+    df1.plot(kind="barh",x="Category",y="Qty Sold")
+    plt.title("Amount Of Sales For Categories") #changes the title
+    plt.show()
+
+def income_profit_products(): #gives the income and profit of each product
+    df = pd.read_csv(CSV_PATH)
+    income = df["Sales Price"] * df["Qty Sold"] #calculates the income of each product
+    profit = income - (df["Cost Price"] * df["Qty Sold"]) #calculates the profit of each product
+    df["Income"] = income
+    df["Profit"] = profit #both lines add the income and profit as new columns to the database
+
+    df1=df.groupby("Product ID")["Income"].sum()
+    df1.reset_index()
+
+    df1.plot(kind="bar",x="Product ID",y="Income",xlabel="Product",ylabel="Income") #plots the graph
+    plt.title("Income Of Each Product") #changes the title
+    plt.show()
+
+    df1=df.groupby("Product ID")["Profit"].sum() #groups the products by the sum of all of their profits
+    df1.reset_index()
+
+    df1.plot(kind="bar",x="Product ID",y="Profit",xlabel="Product",ylabel="Profit") #plots the graph
+    plt.title("Profit Of Each Product") #changes the title
+    plt.show()
+
+
 
 main_menu_choice = main_menu()
 
@@ -105,5 +142,13 @@ if main_menu_choice == 1:
     date_ID = get_data_by_ID_and_date(product_id, start_date, end_date)
     calculate_total_sale (date_ID, product_id, start_date, end_date)
 
+elif main_menu_choice == 2:
+    sales_dif_cat()
+
+elif main_menu_choice == 3:
+    income_profit_products()
+
+else:
+    print("there are no options higher than 3")
 
 
