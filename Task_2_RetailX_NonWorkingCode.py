@@ -1,13 +1,13 @@
 #Accepts input of loyalty card number and validates it
-def loyalty_card_check (): 
-    valid = True
+def loyalty_card_check(): 
+    valid = False
 
     while valid == False:
 
         card_number = input("Please enter the loyalty card number: ")
 
         if card_number.isdigit():
-            if len(card_number) >= 8:
+            if len(card_number) == 8:
                 valid = True
                 return card_number
             else:
@@ -27,7 +27,7 @@ def get_platform():
         print("Please select the purchase platform for this transaction")
         print("1. Online")
         print("2. In-store")
-        selection = input("Enter choice here (1 or 2): ")
+        selection = int(input("Enter choice here (1 or 2): "))
 
         if selection == 1:
             platform = "Online"
@@ -58,9 +58,10 @@ def get_items (prices, categories):
 
             print("Please enter the value of item {}.".format(item_count))
             print("Enter X when finished")
-            temp_price = input("Item {} : £".format(item_count))
+            temp_price = input("Item {} : £ ".format(item_count))
+            print(temp_price)
         
-            if temp_price.lower() == "x":
+            if temp_price.lower() == "x" and item_count > 1:
                 end_transaction = True
                 valid = True
                 break
@@ -78,7 +79,7 @@ def get_items (prices, categories):
         
      
         while valid == False:
-            print("Please enter the category choice for item {}.")
+            print("Please enter the category choice for item {}.".format(item_count))
             print("1. Home Electrical.")
             print("2. Computing and Gaming")
             print("3. Accessories and Consumables")
@@ -130,11 +131,12 @@ def main ():
     prices = []
     categories = []
     points_earned = []
+    index = 0
     card_number = loyalty_card_check()
     platform = get_platform()
     
     get_items(prices, categories)
-    calculate_points (prices, categories)
+    calculate_points (prices, categories, points_earned)
 
     total_value = sum(prices)
     points_subtotal = sum(points_earned)
@@ -151,8 +153,9 @@ def main ():
     print("-"*60)
     print("Final total value of this transaction was £ {:.2f}".format(total_value))
     print('Here is a summary of the points you have earned:')
-    for i in range(points_earned):
-        print("Item {}. {} pts ".format(i+1, points_earned[i]))
+    for i in (points_earned):
+        index += 1
+        print("Item {}. {} pts ".format(index, i))
     print("-"*60)
     print("Points subtotal {}: ".format(points_subtotal))
     print("-"*60)
@@ -163,4 +166,4 @@ def main ():
     print("-"*60)
     print("-"*60)
 
-
+main()
