@@ -1,6 +1,7 @@
 from PyQt6.QtWidgets import QApplication, QWidget, QPushButton, QMainWindow, QGridLayout, QLabel, QLineEdit
 from PyQt6.QtCore import Qt
 
+
 import sys
 
 
