@@ -20,10 +20,13 @@ class bro_app(QMainWindow):
         p1 = page1()
         p2 = page2()
         p3 = page3()
+        p4 = page4()
+        
 
         self.Stack.addWidget(p1)
         self.Stack.addWidget(p2)
         self.Stack.addWidget(p3)
+        self.Stack.addWidget(p4)
 
         Toolbar = QToolBar("main toolbar")
 
@@ -43,17 +46,21 @@ class bro_app(QMainWindow):
         p3_action.setStatusTip("change to page 3")
         p3_action.triggered.connect( lambda:self.display(2))
         Toolbar.addAction(p3_action)
+
+        p4_action = QAction("page 4",self)
+        p4_action.setStatusTip("change to page 4")
+        p4_action.triggered.connect( lambda:self.display(3))
+        Toolbar.addAction(p4_action)
         
 
         self.setCentralWidget(self.Stack)
 
-        self.setGeometry(30, 40, 400,400)
+        self.setGeometry(30, 40, 400, 400)
         self.setWindowTitle('bro ahh')
         self.show()
 
     def display(self,i):
         self.Stack.setCurrentIndex(i)
-        print(self.Stack.currentIndex())
         
 
 class page1(QWidget):
@@ -77,7 +84,7 @@ class page1(QWidget):
         self.password_input = QLineEdit(placeholderText = "provide password")
         self.grid.addWidget(self.password_input)
 
-        self.submit_button = QPushButton("input ts")
+        self.submit_button = QPushButton("input credentials")
         self.submit_button.clicked.connect(self.user_check)
         self.grid.addWidget(self.submit_button)
 
@@ -98,26 +105,66 @@ class page1(QWidget):
 class page2(QWidget):
      def __init__(self):
         super().__init__()
-                
+
         self.grid = QGridLayout()
         self.grid.setAlignment(Qt.AlignmentFlag.AlignTop)
 
-        IMG_PATH = str(FILE_PATH/"random_image.png")
+        IMG_PATH = str(FILE_PATH/"man.jpg")
+        print (IMG_PATH)
 
 
         self.pic = QLabel(self)
         pixmap = QPixmap(IMG_PATH)
+        pixmap = pixmap.scaled(720, 480)
         self.pic.setPixmap(pixmap)
 
         self.grid.addWidget(self.pic, 0,0)
         self.setLayout(self.grid)
 
 class page3(QWidget):
-     def __init__(self):
+    def __init__(self):
         super().__init__()
                 
         self.grid = QGridLayout()
         self.grid.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+        self.dial = QDial()
+        self.dial.setNotchesVisible(True)
+        self.dial.valueChanged.connect(self.updateSpinner)
+        self.dial.setNotchTarget(10)
+        self.grid.addWidget(self.dial)
+
+        self.message = QLabel()
+        self.grid.addWidget(self.message)
+
+        self.setLayout(self.grid)
+
+    def updateSpinner(self):
+
+        self.dial_value = self.dial.value()
+        print(self.dial_value)
+        if self.dial_value == 86:
+            self.message.setText("86 is restaurant slang for out of by the way")
+        else: 
+            self.message.setText("")
+
+class page4(QWidget):
+    def __init__(self):
+        super().__init__()
+
+        self.grid = QGridLayout()
+        self.grid.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+        self.combo_box = QComboBox()
+        self.combo_box.addItems(["cheese","cheese DLC","sams chewing gum","spinny ball thing"])
+        self.grid.addWidget((self.combo_box))
+
+        self.combo_box.currentIndexChanged.connect(self.show_image)
+
+        self.setLayout(self.grid)
+
+    def show_image(self):
+        print(self.combo_box.currentText())
 
 app = QApplication(sys.argv)
 ex = bro_app()
