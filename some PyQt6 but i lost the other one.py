@@ -152,8 +152,13 @@ class page4(QWidget):
     def __init__(self):
         super().__init__()
 
+
+
         self.grid = QGridLayout()
         self.grid.setAlignment(Qt.AlignmentFlag.AlignTop)
+
+        self.message = QLabel()
+        self.grid.addWidget(self.message)
 
         self.combo_box = QComboBox()
         self.combo_box.addItems(["cheese","cheese DLC","sams chewing gum","spinny ball thing"])
@@ -164,7 +169,8 @@ class page4(QWidget):
         self.setLayout(self.grid)
 
     def show_image(self):
-        print(self.combo_box.currentText())
+        if self.combo_box.currentText() == "cheese DLC":
+            print("bro")
 
 app = QApplication(sys.argv)
 ex = bro_app()
