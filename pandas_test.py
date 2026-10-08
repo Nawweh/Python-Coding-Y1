@@ -1,8 +1,12 @@
 import pandas as pd
+from pathlib import Path
 
-df = pd.read_csv("Task3_Glenstar_data.csv")
+FILE_PATH = Path(__file__).parent
+CSV_PATH = (FILE_PATH/"Task3_Glenstar_data.csv")
 
-df['Date'] = pd.to_datetime(df['Date'],format='mixed', dayfirst=True) 
+df = pd.read_csv(CSV_PATH)
+
+df['Date'] = pd.to_datetime(df['Date'],format="Mixed",dayfirst=True)
 
 print(df['Date'])
 
