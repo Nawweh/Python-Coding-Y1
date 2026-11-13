@@ -26,13 +26,11 @@ def main_menu():
             print("Sorry you did not enter a valid option")
     return choice
 
-
+# allows user to select one athlete
 def get_athlete_names():
-    # Creates a dataframe using the data from the CSV file
     df = pd.read_csv("Task4a_Glenstar_data.csv")
     # Gets a list of the athlete names from the dataframe
     athletes = df["Athlete"].unique().tolist()
-    # Asks the user to input an athlete
     valid = False
     while valid == False:
         print("-" * 70)
@@ -48,7 +46,6 @@ def get_athlete_names():
         selection = input('Enter your number selection here: ')
         if selection.isdigit():
             selection = int(selection)
-            # Checks if the selection is valid (must be a number in the given list of athletes)
             if selection > 0 and selection <= lastdigit:
                 valid = True
             else:
@@ -60,9 +57,8 @@ def get_athlete_names():
     print("You have selected athlete: ", chosen_athlete)
     return chosen_athlete
 
-
+# Gets a date from the user and returns it if valid
 def get_date(start_end):
-    # Gets a date from the user and returns it if valid
     flag = True
     while flag:
         date = input('Please enter {} date for your date range (DD/MM/YYYY) : '.format(start_end))
@@ -75,7 +71,7 @@ def get_date(start_end):
             flag = False
     return date
 
-
+#grabs a a dataframe that contains data from the athlete between the selected dates
 def get_data_by_athlete_and_date(athlete, start_date, end_date):
     all = pd.read_csv("Task4a_Glenstar_data.csv")
     # Creates a copy of the section of the dataframe where the name in the 'Athlete' column is the one chosen by the user
@@ -106,29 +102,26 @@ def get_data_by_date(start_date, end_date):
     date_extract = all.loc[date_range]
     return date_extract
 
-
+# Calculates how many times an athlete got each placement
 def calculate_places(athlete_extract, athlete, start_date, end_date):
-    # Calculates how many times an athlete got each placement
     gold = athlete_extract['Place'].value_counts().get("Gold")
     silver = athlete_extract['Place'].value_counts().get("Silver")
     bronze = athlete_extract['Place'].value_counts().get("Bronze")
     top = athlete_extract['Place'].value_counts().get("Top 10")
     no_place = athlete_extract['Place'].value_counts().get("Not Placed")
-    # If 'none' is returned for one of the above values, it is replaced with a 0 so that it doesn't cause an error when trying to convert it into a graph
     placements_array = [gold, silver, bronze, top, no_place]
     for placement in range(5):
         try:
             placements_array[placement] = int(placements_array[placement])
         except:
             placements_array[placement] = 0
-    # Outputs these results to the user
     print("Here is the break down of the performance of {} between {} and {}: ".format(athlete, start_date, end_date))
     print("Gold medals: ", gold)
     print("Silver medals:", silver)
     print("Bronze medals: ", bronze)
     print("Top 10: ", top)
     print("Not placed: ", no_place)
-    # Creates a graph for the user using this data if chosen
+
     if get_graph_request() == "y":
         plt.bar(["Gold", "Silver", "Bronze", "Top 10", "No Place"], placements_array)
         plt.title(f"Performance of {athlete} between {start_date} and {end_date}")
@@ -161,17 +154,15 @@ def get_performance_choice():
 
 # Compares the performance for an athlete between judo and jiu-jitsu in a date range
 def calculate_individual_performance(athlete_data):
-    # Gets the data for each ruleset, then finds out how many times the athlete got each placement in that ruleset
     judo_data = athlete_data[(athlete_data['Rule Set'] == "Judo")]
     jiujitsu_data = athlete_data[(athlete_data['Rule Set'] == "Jiu-Jitsu")]
     judo_placements = judo_data['Place'].value_counts()
     jiujitsu_placements = jiujitsu_data['Place'].value_counts()
-    # Then calculates the values for each placement (as value_counts returns them in different orders for the index)
     possible_placements = ['Gold', 'Silver', 'Bronze', 'Top 10', 'Not Placed']
     judo_placements_output = []
     jiujitsu_placements_output = []
     for placement in possible_placements:
-        # Added validation so that it doesn't cause errors when trying to make graphs
+
         if judo_placements.get(placement) != None:
             judo_placements_output.append(judo_placements.get(placement))
         else:
@@ -180,14 +171,14 @@ def calculate_individual_performance(athlete_data):
             jiujitsu_placements_output.append(jiujitsu_placements.get(placement))
         else:
             jiujitsu_placements_output.append(0)
-    # Outputs how many times the athlete got a placement in each rule set after ordering the values correctly
+
     print(f"Total judo placements for {athlete} between {start_date} and {end_date}:")
     for output in range(5):
         print(f"{possible_placements[output]}: {judo_placements_output[output]}")
     print(f"Total jiu-jitsu placements for {athlete} between {start_date} and {end_date}:")
     for output in range(5):
         print(f"{possible_placements[output]}: {jiujitsu_placements_output[output]}")
-    # Creates charts showing the difference between the athlete's performance if requested
+
     if get_graph_request() == "y":
         print("Graphs created. Close them to return to main menu")
         plt.figure(0, (8, 8))
@@ -264,7 +255,6 @@ def get_prize_money_choice():
 
 # Calculates how much was won over time by an individual athlete
 def calculate_individual_winnings(athlete_data):
-    # Creates a list using the amounts that were won at each event for the athlete
     money_won = list(athlete_data["Prize Money"])
     # Using a loop to create a list showing how much was won overall through the period of time
     total_amounts = []
@@ -272,11 +262,11 @@ def calculate_individual_winnings(athlete_data):
     for amount in money_won:
         overall_amount += amount
         total_amounts.append(overall_amount)
-    # Adds this list to the data so that it can be used later
+
     athlete_data["Total Winnings"] = total_amounts
-    # Outputs the total won by the athlete before asking them if they want to see the information as a graph
+
     print(f"The total amount won by {athlete} between {start_date} and {end_date} was £{overall_amount}")
-    # If chosen by the user, creates and displays a graph showing how much the athlete won over the period of time
+
     if get_graph_request() == "y":
         print("Graphs created. Close them to return to main menu")
         plt.figure(0, (15, 15))
